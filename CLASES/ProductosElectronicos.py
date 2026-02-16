@@ -9,5 +9,6 @@ class ProductosElectronicos:
         print(f"Modelo: {self.modelo}")
         print(f"Precio: ${self.precio}")
 
+
 Producto1 = ProductosElectronicos("Apple", "iPhone 13", 999)
 Producto1.mostrar_informacion()
