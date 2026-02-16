@@ -1,5 +1,12 @@
 class Alimentos:
-    def __init__(self, nombre, calorias, proteinas, carbohidratos, grasas):
+    def __init__(
+        self,
+        nombre: str,
+        calorias: float,
+        proteinas: float,
+        carbohidratos: float,
+        grasas: float,
+    ):
         self.nombre = nombre
         self.calorias = calorias
         self.proteinas = proteinas
@@ -7,12 +14,10 @@ class Alimentos:
         self.grasas = grasas
 
     def imprimir_datos(self):
-        print(
-            f"{self.nombre}: {self.calorias} kcal, "
-            f"{self.proteinas} g proteínas, "
-            f"{self.carbohidratos} g carbohidratos, "
-            f"{self.grasas} g grasas"
-        )
+        print(f"{self.nombre}: {self.calorias} kcal, ")
+        print(f"{self.proteinas} g proteínas, ")
+        print(f"{self.carbohidratos} g carbohidratos, ")
+        print(f"{self.grasas} g grasas")
 
 
 Alimento1 = Alimentos("Manzana", 52, 0.3, 14, 0.2)
