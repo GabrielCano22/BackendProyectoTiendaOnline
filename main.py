@@ -113,9 +113,9 @@ def menu_admin(tienda, admin):
 # ============================================================
 def menu_principal():
     print("\n" + "=" * 50)
-    print("   TIENDA ONLINE - LATONERÍA Y CARROCERÍA")
+    print("   TIENDA ONLINE - LA TIENDA DE GERARDO")
     print("=" * 50)
-    print("  1. Ingresar como Cliente")
+    print("  1. Ingresar como Usuario")
     print("  2. Ingresar como Administrador")
     print("  3. Salir")
     print("=" * 50)
@@ -139,8 +139,8 @@ def main():
         if opcion == "1":
             nombre = input("\n  Ingrese su nombre: ").strip()
             if nombre:
-                cliente = Cliente(nombre)
-                menu_cliente(tienda, cliente)
+                usuario = Usuario(nombre)
+                menu_usuario(tienda, usuario)
             else:
                 print("  Nombre inválido.")
 
