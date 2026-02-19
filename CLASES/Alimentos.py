@@ -1,24 +1,29 @@
-class Alimentos:
-    def __init__(
-        self,
-        nombre: str,
-        calorias: float,
-        proteinas: float,
-        carbohidratos: float,
-        grasas: float,
-    ):
-        self.nombre = nombre
-        self.calorias = calorias
-        self.proteinas = proteinas
-        self.carbohidratos = carbohidratos
-        self.grasas = grasas
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Tienda Online - La Tienda de Gerardo
+Archivo: CLASES/alimentos.py
+"""
 
-    def imprimir_datos(self):
-        print(f"{self.nombre}: {self.calorias} kcal, ")
-        print(f"{self.proteinas} g proteínas, ")
-        print(f"{self.carbohidratos} g carbohidratos, ")
-        print(f"{self.grasas} g grasas")
+from CLASES.Producto import Producto
 
 
-Alimento1 = Alimentos("Manzana", 52, 0.3, 14, 0.2)
-Alimento1.imprimir_datos()
+class Alimentos(Producto):
+    def __init__(self, codigo: str, nombre: str, marca: str,
+                 precio: float, stock: int, categoria_alimento: str) -> None:
+        """
+        Args:
+            categoria_alimento : Categoría del alimento (ej: Granos, Lácteos, Carnes)
+        """
+        super().__init__(codigo, nombre, marca, precio, stock)
+        self.categoria_alimento: str = categoria_alimento
+
+    def obtener_info(self) -> str:
+        return (f"[{self.codigo}] {self.nombre} | Marca: {self.marca} "
+                f"| Categoría: {self.categoria_alimento}")
+
+    def _atributos_extra(self) -> list:
+        return [("CATEGORÍA", self.categoria_alimento)]
+
+    def __str__(self) -> str:
+        return self.obtener_info()
