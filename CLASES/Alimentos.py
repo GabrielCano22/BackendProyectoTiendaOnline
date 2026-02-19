@@ -7,7 +7,6 @@ Archivo: CLASES/alimentos.py
 
 from CLASES.Producto import Producto
 
-
 class Alimentos(Producto):
     def __init__(self, codigo: str, nombre: str, marca: str,
                  precio: float, stock: int, categoria_alimento: str) -> None:

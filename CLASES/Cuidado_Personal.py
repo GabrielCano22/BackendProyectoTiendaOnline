@@ -7,7 +7,6 @@ Archivo: CLASES/cuidado_personal.py
 
 from CLASES.Producto import Producto
 
-
 class CuidadoPersonal(Producto):
     def __init__(self, codigo: str, nombre: str, marca: str,
                  precio: float, stock: int, tipo_cuidado: str, genero: str) -> None:

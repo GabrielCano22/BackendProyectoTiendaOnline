@@ -4,7 +4,7 @@
 Tienda Online - La Tienda de Gerardo
 Archivo: tienda.py
 """
-
+from CLASES.Producto  import Producto
 from CLASES.Alimentos import Alimentos
 # from CLASES.electronicos     import Electronicos
 # from CLASES.ropa             import Ropa
@@ -20,7 +20,7 @@ class Tienda:
         self.nombre:     str  = nombre
         self.__catalogo: dict = {}
 
-    def agregar_producto(self, producto) -> str:
+    def agregar_producto(self, producto:Producto) -> str:
         """Agrega un producto al catálogo."""
         if producto.codigo not in self.__catalogo:
             self.__catalogo[producto.codigo] = producto
@@ -37,7 +37,7 @@ class Tienda:
         else:
             return f"No se encontró ningún producto con el código {codigo}."
 
-    def buscar_por_codigo(self, codigo: str):
+    def buscar_por_codigo(self, codigo: str)-> Producto:
         """Retorna el objeto producto o None si no existe."""
         return self.__catalogo.get(codigo, None)
 
@@ -69,7 +69,7 @@ class Tienda:
 
     def mostrar_detalle_producto(self, codigo: str) -> None:
         """Muestra el detalle completo de un producto."""
-        producto = self.buscar_por_codigo(codigo)
+        producto:Producto = self.buscar_por_codigo(codigo)
         if producto:
             print(producto.mostrar_detalle())
         else:
