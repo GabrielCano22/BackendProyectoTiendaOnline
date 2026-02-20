@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 Tienda Online - La Tienda de Gerardo
-Archivo: CLASES/ProductosElectronicos.py
+Archivo: CLASES/mascotas.py
 """
 
 from CLASES.Producto import Producto
 
 
-class ProductosElectronicos(Producto):
+class Mascotas(Producto):
     def __init__(
         self,
         codigo: str,
@@ -16,23 +16,28 @@ class ProductosElectronicos(Producto):
         marca: str,
         precio: float,
         stock: int,
-        tipo_producto: str,
+        edad: str,
+        tamano: str,
     ):
         """
         Args:
-            tipo_producto (str): Tipo de producto electrónico (ej: "televisor", "computadora", "celular").
+            edad (str): Etapa de edad recomendada
+                (ej: "cachorro", "adulto", "senior").
+            tamano (str): Tamaño recomendado
+                (ej: "pequeño", "mediano", "grande").
         """
         super().__init__(codigo, nombre, marca, precio, stock)
-        self.tipo_producto = tipo_producto
+        self.edad = edad
+        self.tamano = tamano
 
     def obtener_info(self) -> str:
         return (
             f"[{self.codigo}] {self.nombre} | Marca: {self.marca} "
-            f"| Tipo de producto: {self.tipo_producto}"
+            f"| Edad: {self.edad} | Tamaño: {self.tamano}"
         )
 
     def _atributos_extra(self) -> list:
-        return [("TIPO DE PRODUCTO", self.tipo_producto)]
+        return [("EDAD", self.edad), ("TAMAÑO", self.tamano)]
 
     def __str__(self) -> str:
         return self.obtener_info()
