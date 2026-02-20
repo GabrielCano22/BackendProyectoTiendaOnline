@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 Tienda Online - La Tienda de Gerardo
-Archivo: CLASES/ProductosElectronicos.py
+Archivo: CLASES/licoreria.py
 """
 
 from CLASES.Producto import Producto
 
 
-class ProductosElectronicos(Producto):
+class Licoreria(Producto):
     def __init__(
         self,
         codigo: str,
@@ -16,23 +16,23 @@ class ProductosElectronicos(Producto):
         marca: str,
         precio: float,
         stock: int,
-        tipo_producto: str,
+        tipo_licor: str,
     ):
         """
         Args:
-            tipo_producto (str): Tipo de producto electrónico (ej: "televisor", "computadora", "celular").
+            tipo_licor (str): Tipo de licor (ej: "vino", "cerveza", "whisky").
         """
         super().__init__(codigo, nombre, marca, precio, stock)
-        self.tipo_producto = tipo_producto
+        self.tipo_licor = tipo_licor
 
     def obtener_info(self) -> str:
         return (
             f"[{self.codigo}] {self.nombre} | Marca: {self.marca} "
-            f"| Tipo de producto: {self.tipo_producto}"
+            f"| Tipo de licor: {self.tipo_licor}"
         )
 
     def _atributos_extra(self) -> list:
-        return [("TIPO DE PRODUCTO", self.tipo_producto)]
+        return [("TIPO DE LICOR", self.tipo_licor)]
 
     def __str__(self) -> str:
         return self.obtener_info()
