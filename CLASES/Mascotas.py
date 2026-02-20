@@ -9,7 +9,16 @@ from CLASES.Producto import Producto
 
 
 class Mascotas(Producto):
-    def __init__(self, codigo, nombre, marca, precio, stock, edad, tamano):
+    def __init__(
+        self,
+        codigo: str,
+        nombre: str,
+        marca: str,
+        precio: float,
+        stock: int,
+        edad: str,
+        tamano: str,
+    ):
         """
         Args:
             edad (str): Etapa de edad recomendada
@@ -21,14 +30,14 @@ class Mascotas(Producto):
         self.edad = edad
         self.tamano = tamano
 
-    def obtener_info(self):
+    def obtener_info(self) -> str:
         return (
             f"[{self.codigo}] {self.nombre} | Marca: {self.marca} "
             f"| Edad: {self.edad} | Tamaño: {self.tamano}"
         )
 
-    def _atributos_extra(self):
+    def _atributos_extra(self) -> list:
         return [("EDAD", self.edad), ("TAMAÑO", self.tamano)]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.obtener_info()

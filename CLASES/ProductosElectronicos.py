@@ -9,7 +9,15 @@ from CLASES.Producto import Producto
 
 
 class ProductosElectronicos(Producto):
-    def __init__(self, codigo, nombre, marca, precio, stock, tipo_producto):
+    def __init__(
+        self,
+        codigo: str,
+        nombre: str,
+        marca: str,
+        precio: float,
+        stock: int,
+        tipo_producto: str,
+    ):
         """
         Args:
             tipo_producto (str): Tipo de producto electrónico (ej: "televisor", "computadora", "celular").
@@ -17,14 +25,14 @@ class ProductosElectronicos(Producto):
         super().__init__(codigo, nombre, marca, precio, stock)
         self.tipo_producto = tipo_producto
 
-    def obtener_info(self):
+    def obtener_info(self) -> str:
         return (
             f"[{self.codigo}] {self.nombre} | Marca: {self.marca} "
             f"| Tipo de producto: {self.tipo_producto}"
         )
 
-    def _atributos_extra(self):
+    def _atributos_extra(self) -> list:
         return [("TIPO DE PRODUCTO", self.tipo_producto)]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.obtener_info()
