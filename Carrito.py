@@ -89,13 +89,9 @@ class Carrito:
                     "No se ha aplicado ningún descuento. \n Para obtener descuentos, compra 3 o más unidades."
                 )
 
-    def realizar_compra(self, tienda: Tienda) -> None:
-        """
-        Permite confirmar la compra del carrito.
-
-        :param tienda: Objeto de tipo Tienda.
-        :return: None
-        """
+    def realizar_compra(self, tienda: Tienda, nombre_cliente: str) -> None:
+        """Realiza la compra de los productos en el carrito, genera una factura
+        y vacía el carrito"""
         if not self.items:
             print("El carrito se encuentra vacio. No se puede realizar la compra.")
             return
@@ -106,8 +102,9 @@ class Carrito:
             print("Compra cancelada.")
             return
         else:
-            print("Compra realizada con éxito. ¡Gracias por su compra!")
-            self.vaciar_carrito()
+            self.generar_factura(nombre_cliente)
+        self.vaciar_carrito()
+        print("Compra realizada con éxito. ¡Gracias por su compra!")
 
     def calcular_descuento(self) -> float:
         """
@@ -130,3 +127,56 @@ class Carrito:
             return 0.15
         else:
             return 0
+
+    def eliminar_producto(self, codigo: str) -> None:
+        """
+        Elimina un producto del carrito por su código.
+
+        """
+        if codigo in self.items:
+            producto = self.items[codigo]["producto"]
+            cantidad = self.items[codigo]["cantidad"]
+            producto.agregar_stock(cantidad)
+            del self.items[codigo]
+            print(f"Producto con código '{codigo}' eliminado del carrito.")
+        else:
+            print(
+                f"No se encontró ningún producto con el código '{codigo}' en el carrito."
+            )
+
+    def generar_factura(self, nombre_cliente: str) -> None:
+        """
+        genera una factura detallada de la compra.
+
+        """
+        if not self.items:
+            print("El carrito se encuentra vacio. No se puede generar la factura.")
+            return
+
+        print("\n" + "=" * 40)
+        print("FACTURA DE COMPRA")
+        print(f"Cliente: {nombre_cliente}")
+        print("=" * 40)
+
+        total = 0
+        for codigo, item in self.items.items():
+            producto = item["producto"]
+            cantidad = item["cantidad"]
+            subtotal = producto.obtener_precio() * cantidad
+            total += subtotal
+
+            print(
+                f"{producto.nombre} (x{cantidad}) - ${producto.obtener_precio():,.0f} COP cada uno - Subtotal: ${subtotal:,.0f} COP"
+            )
+
+        print("-" * 40)
+        print(f"Total a pagar: ${total:,.0f} COP")
+
+        descuento = self.calcular_descuento()
+        total_con_descuento = total - (total * descuento)
+
+        if descuento > 0:
+            print(f"Descuento aplicado: {descuento*100:.0f}%")
+            print(f"Total con descuento: ${total_con_descuento:,.0f} COP")
+
+        print("=" * 40)
