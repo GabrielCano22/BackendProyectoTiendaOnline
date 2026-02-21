@@ -112,7 +112,7 @@ class Tienda:
             CuidadoPersonal("CUI-002", "Crema Facial 50ml", "Nivea",
                             24000, 15, "Facial", "Mujer"),
         ]
-
+        #Eliminar esto cuando kevin suba las subcategorias que faltan
         for producto in productos_demo:
             self.agregar_producto(producto)
 
