@@ -3,7 +3,7 @@ from CLASES.Producto import Producto
 
 class Hogar(Producto):
     """
-       Clase que representa un producto de la categoría Hogar.
+    Clase que representa un producto de la categoría Hogar.
     Hereda de la clase Producto y añade atributos específicos
     como la categoría del hogar y la habitación a la que pertenece.
     """
@@ -11,7 +11,7 @@ class Hogar(Producto):
     def __init__(
         self,
         codigo: str,
-        nombre,
+        nombre: str,
         marca: str,
         precio: float,
         stock: int,

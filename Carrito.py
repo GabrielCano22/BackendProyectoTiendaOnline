@@ -141,12 +141,12 @@ class Carrito:
             print(f"Producto con código '{codigo}' eliminado del carrito.")
         else:
             print(
-                f"No se encontró ningún porducto con el código '{codigo}' en el carrito."
+                f"No se encontró ningún producto con el código '{codigo}' en el carrito."
             )
 
     def generar_factura(self, nombre_cliente: str) -> None:
         """
-        enera una factura detallada de la compra.
+        genera una factura detallada de la compra.
 
         """
         if not self.items:
@@ -173,7 +173,7 @@ class Carrito:
         print(f"Total a pagar: ${total:,.0f} COP")
 
         descuento = self.calcular_descuento()
-        total_con_descuento = total + (total * descuento)
+        total_con_descuento = total - (total * descuento)
 
         if descuento > 0:
             print(f"Descuento aplicado: {descuento*100:.0f}%")
