@@ -101,8 +101,8 @@ class Carrito:
             return
 
         self.mostrar_carrito()
-        comfirmacion = input("¿Desea confirmar la compra? (s/n): ").lower()
-        if comfirmacion != "s":
+        confirmacion = input("¿Desea confirmar la compra? (s/n): ").lower()
+        if confirmacion != "s":
             print("Compra cancelada.")
             return
         else:

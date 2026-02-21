@@ -4,15 +4,9 @@
 Tienda Online - La Tienda de Gerardo
 Archivo principal: main.py
 """
-# ============================================================
-# CONFIGURACIÓN: Define aquí la clave del administrador
-# ============================================================
+from tienda import Tienda
+from usuario import Cliente, Administrador
 CLAVE_ADMIN = "admin123"
-
-
-# ============================================================
-# MENÚ USUARIO
-# ============================================================
 def menu_usuario(tienda, usuario):
     while True:
         print("\n" + "=" * 50)
@@ -51,10 +45,6 @@ def menu_usuario(tienda, usuario):
         else:
             print("  Opción no válida. Intente de nuevo.")
 
-
-# ============================================================
-# MENÚ ADMINISTRADOR
-# ============================================================
 def menu_admin(tienda, admin):
     while True:
         print("\n" + "=" * 50)
@@ -106,11 +96,7 @@ def menu_admin(tienda, admin):
 
         else:
             print("  Opción no válida. Intente de nuevo.")
-
-
-# ============================================================
-# MENÚ PRINCIPAL
-# ============================================================
+            
 def menu_principal():
     print("\n" + "=" * 50)
     print("   TIENDA ONLINE - LA TIENDA DE GERARDO")
@@ -121,15 +107,9 @@ def menu_principal():
     print("=" * 50)
     return input("  Seleccione una opción: ").strip()
 
-
-# ============================================================
-# MAIN
-# ============================================================
-"""
-Punto de entrada del programa. Inicializa la tienda y muestra el menú principal.
 def main():
     tienda = Tienda("La Tienda de Gerardo")
-    tienda.cargar_productos_demo()  # Carga productos de ejemplo al iniciar
+    tienda.cargar_productos_demo()  # Cambiar esto cuando ya tengamos todas las subclases establecidas
 
     print("\n  La Tienda de Gerardo.")
 
@@ -139,7 +119,7 @@ def main():
         if opcion == "1":
             nombre = input("\n  Ingrese su nombre: ").strip()
             if nombre:
-                usuario = Usuario(nombre)
+                usuario = Cliente(nombre)
                 menu_usuario(tienda, usuario)
             else:
                 print("  Nombre inválido.")
@@ -164,4 +144,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    """
