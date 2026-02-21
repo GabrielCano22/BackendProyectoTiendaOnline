@@ -6,7 +6,10 @@ Archivo principal: main.py
 """
 from tienda import Tienda
 from usuario import Cliente, Administrador
+
 CLAVE_ADMIN = "admin123"
+
+
 def menu_usuario(tienda, usuario):
     while True:
         print("\n" + "=" * 50)
@@ -15,8 +18,9 @@ def menu_usuario(tienda, usuario):
         print("  1. Ver catálogo de productos")
         print("  2. Agregar producto al carrito")
         print("  3. Ver mi carrito")
-        print("  4. Realizar compra")
-        print("  5. Cerrar sesión")
+        print("  4. realizar compra")
+        print("  5. Eliminar producto del carrito")
+        print("  6. Cerrar sesión")
         print("=" * 50)
 
         opcion = input("  Seleccione una opción: ").strip()
@@ -36,14 +40,19 @@ def menu_usuario(tienda, usuario):
             usuario.carrito.mostrar_carrito()
 
         elif opcion == "4":
-            usuario.carrito.realizar_compra(tienda)
-
+            usuario.carrito.realizar_compra(tienda, usuario.nombre)
         elif opcion == "5":
+            usuario.carrito.eliminar_producto(
+                input("  Ingrese el código del producto a eliminar: ").strip().upper()
+            )
+
+        elif opcion == "6":
             print(f"\n  Hasta pronto, {usuario.nombre}. ¡Gracias por visitarnos!")
             break
 
         else:
             print("  Opción no válida. Intente de nuevo.")
+
 
 def menu_admin(tienda, admin):
     while True:
@@ -96,7 +105,8 @@ def menu_admin(tienda, admin):
 
         else:
             print("  Opción no válida. Intente de nuevo.")
-            
+
+
 def menu_principal():
     print("\n" + "=" * 50)
     print("   TIENDA ONLINE - LA TIENDA DE GERARDO")
@@ -106,6 +116,7 @@ def menu_principal():
     print("  3. Salir")
     print("=" * 50)
     return input("  Seleccione una opción: ").strip()
+
 
 def main():
     tienda = Tienda("La Tienda de Gerardo")
