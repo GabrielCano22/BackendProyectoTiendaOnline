@@ -17,7 +17,7 @@ class Licoreria(Producto):
         precio: float,
         stock: int,
         tipo_licor: str,
-    ):
+    ) -> None:
         """
         Args:
             tipo_licor (str): Tipo de licor (ej: "vino", "cerveza", "whisky").
