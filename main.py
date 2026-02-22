@@ -120,7 +120,6 @@ def menu_principal():
 
 def main():
     tienda = Tienda("La Tienda de Gerardo")
-    tienda.cargar_productos_demo()  # Cambiar esto cuando ya tengamos todas las subclases establecidas
 
     print("\n  La Tienda de Gerardo.")
 
