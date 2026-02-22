@@ -18,6 +18,18 @@ class Bebes(Producto):
         categoria_bebe: str,
         rango_edad: str,
     ) -> None:
+        """
+        Inicializa un producto de tipo Bebés.
+
+        :param codigo: Código único del producto.
+        :param nombre: Nombre del producto.
+        :param marca: Marca del producto.
+        :param precio: Precio del producto.
+        :param stock: Cantidad disponible en inventario.
+        :param categoria_bebe: Categoría del producto (ej: Pañales, Alimentación, Juguetes).
+        :param rango_edad: Rango de edad recomendado (ej: 0-6 meses, 6-12 meses).
+        :return: None
+        """
 
         super().__init__(codigo, nombre, marca, precio, stock)
         self.categoria_bebe: str = categoria_bebe

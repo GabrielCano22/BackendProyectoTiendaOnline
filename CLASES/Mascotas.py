@@ -18,7 +18,7 @@ class Mascotas(Producto):
         stock: int,
         edad: str,
         tamano: str,
-    ):
+    ) -> None:
         """
         Args:
             edad (str): Etapa de edad recomendada

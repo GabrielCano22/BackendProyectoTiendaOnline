@@ -17,7 +17,7 @@ class ProductosElectronicos(Producto):
         precio: float,
         stock: int,
         tipo_producto: str,
-    ):
+    ) -> None:
         """
         Args:
             tipo_producto (str): Tipo de producto electrónico (ej: "televisor", "computadora", "celular").
