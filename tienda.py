@@ -6,18 +6,18 @@ Archivo: tienda.py
 """
 from CLASES.Producto  import Producto
 from CLASES.Alimentos import Alimentos
-# from CLASES.electronicos     import Electronicos
-# from CLASES.ropa             import Ropa
-# from CLASES.hogar            import Hogar
-# from CLASES.mascotas         import Mascotas
+from CLASES.ProductosElectronicos import ProductosElectronicos
+from CLASES.Ropa import Ropa
+from CLASES.hogar import Hogar
+from CLASES.Mascotas import Mascotas
 from CLASES.Cuidado_Personal import CuidadoPersonal
-# from CLASES.bebes            import Bebes
-# from CLASES.licoreria        import Licoreria
+from CLASES.Bebes import Bebes
+from CLASES.Licoreria import Licoreria
 
 
 class Tienda:
     def __init__(self, nombre: str) -> None:
-        self.nombre:     str  = nombre
+        self.nombre: str  = nombre
         self.__catalogo: dict = {}
 
     def agregar_producto(self, producto:Producto) -> str:
@@ -95,25 +95,3 @@ class Tienda:
                       f"${p.obtener_precio():>9,.0f} {p.obtener_stock():>5}")
         else:
             print(f"\n  No se encontraron productos con '{termino}'.")
-
-    def cargar_productos_demo(self) -> None:
-        """Carga productos de ejemplo para iniciar el sistema con datos."""
-
-        productos_demo: list = [
-            Alimentos("ALI-001", "Arroz Diana 500g", "Diana",
-                      2800, 50, "Granos"),
-
-            Alimentos("ALI-002", "Leche Entera 1L", "Alquería",
-                      4200, 30, "Lácteos"),
-
-            CuidadoPersonal("CUI-001", "Shampoo 400ml", "Head & Shoulders",
-                            18500, 20, "Cabello", "Unisex"),
-
-            CuidadoPersonal("CUI-002", "Crema Facial 50ml", "Nivea",
-                            24000, 15, "Facial", "Mujer"),
-        ]
-        #Eliminar esto cuando kevin suba las subcategorias que faltan
-        for producto in productos_demo:
-            self.agregar_producto(producto)
-
-        print(f"  {len(productos_demo)} productos de demostración cargados correctamente.")
