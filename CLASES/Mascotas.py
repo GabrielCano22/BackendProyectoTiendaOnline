@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Tienda Online - La Tienda de Gerardo
-Archivo: CLASES/mascotas.py
+Archivo: CLASES/Mascotas.py
 """
 
 from CLASES.Producto import Producto

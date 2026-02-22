@@ -4,8 +4,8 @@
 Tienda Online - La Tienda de Gerardo
 Archivo principal: main.py
 """
-from tienda import Tienda
-from usuario import Cliente, Administrador
+from Tienda import Tienda
+from Usuario import Cliente, Administrador
 
 CLAVE_ADMIN = "admin123"
 
@@ -18,7 +18,7 @@ def menu_usuario(tienda, usuario):
         print("  1. Ver catálogo de productos")
         print("  2. Agregar producto al carrito")
         print("  3. Ver mi carrito")
-        print("  4. realizar compra")
+        print("  4. Realizar compra")
         print("  5. Eliminar producto del carrito")
         print("  6. Cerrar sesión")
         print("=" * 50)

@@ -1,4 +1,4 @@
-from tienda import Tienda
+from Tienda import Tienda
 
 
 class Carrito:
@@ -58,7 +58,7 @@ class Carrito:
         :return: None
         """
         if not self.items:
-            print("El carrito se encuentra vacio.")
+            print("El carrito se encuentra vacío.")
             return
         else:
             total = 0
