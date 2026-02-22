@@ -86,7 +86,7 @@ class Carrito:
                 print("¡Felicidades! Has obtenido un descuento del 30% ")
             else:
                 print(
-                    "No se ha aplicado ningún descuento. \n Para obtener descuentos, compra 3 o más unidades."
+                    "No se ha aplicado ningún descuento. \nPara obtener descuentos, compra 3 o más unidades."
                 )
 
     def realizar_compra(self, tienda: Tienda, nombre_cliente: str) -> None:

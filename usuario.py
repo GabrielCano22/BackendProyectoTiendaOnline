@@ -24,8 +24,8 @@ class Usuario:
 class Cliente(Usuario):
     def __init__(self, nombre: str) -> None:
         super().__init__(nombre, "Cliente")
-        self.carrito:   Carrito = Carrito()
-        self.historial: list    = []
+        self.carrito:Carrito = Carrito()
+        self.historial: list= []
 
     def obtener_info(self) -> str:
         return (f"Cliente: {self.nombre} | "
@@ -66,7 +66,9 @@ class Administrador(Usuario):
         from CLASES.Cuidado_Personal     import CuidadoPersonal
         from CLASES.Licoreria            import Licoreria
         from CLASES.Mascotas             import Mascotas
-        #Agregar las categirias de kevin cuando estén listas
+        from CLASES.Bebes                import Bebes
+        from CLASES.hogar                import Hogar
+        from CLASES.Ropa                 import Ropa
         
         print(f"\n{'=' * 50}")
         print("  REGISTRAR NUEVO PRODUCTO")
@@ -76,11 +78,14 @@ class Administrador(Usuario):
         print("  3. Cuidado Personal")
         print("  4. Licorería")
         print("  5. Mascotas")
+        print("  6. Bebés")
+        print("  7. Hogar")
+        print("  8. Ropa")
         print(f"{'=' * 50}")
 
-        categoria: str = input("  Seleccione la categoría (1-5): ").strip()
+        categoria: str = input("  Seleccione la categoría (1-8): ").strip()
 
-        if categoria not in ["1", "2", "3", "4", "5"]:#Agregar las categorías de kevin cuando estén listas
+        if categoria not in [str(i) for i in range(1,9)]:
             print("  Categoría no válida.")
             return
 
@@ -123,7 +128,23 @@ class Administrador(Usuario):
             edad:   str = input("  Edad (ej: Cachorro, Adulto, Senior): ").strip()
             tamano: str = input("  Tamaño (ej: Pequeño, Mediano, Grande): ").strip()
             nuevo = Mascotas(codigo, nombre, marca, precio, stock, edad, tamano)
-        #Agregar las categorías de kevin cuando estén listas
+        
+        elif categoria == "6":
+            categoria_bebe: str = input("  Categoría (ej: Higiene, Nutrición, Ropa): ").strip()
+            rango_edad:     str = input("  Rango de edad (ej: 0-6 meses): ").strip()
+            nuevo = Bebes(codigo, nombre, marca, precio, stock, categoria_bebe, rango_edad)
+
+        elif categoria == "7":
+            categoria_hogar: str = input("  Categoría (ej: Decoración, Muebles): ").strip()
+            habitacion:      str = input("  Habitación (ej: Sala, Cocina, Dormitorio): ").strip()
+            nuevo = Hogar(codigo, nombre, marca, precio, stock, categoria_hogar, habitacion)
+
+        elif categoria == "8":
+            tipo:  str = input("  Tipo (ej: Camisa, Pantalón, Zapatos): ").strip()
+            talla: str = input("  Talla (ej: S, M, L, XL): ").strip()
+            color: str = input("  Color: ").strip()
+            nuevo = Ropa(codigo, nombre, marca, precio, stock, tipo, talla, color)
+            
         print(tienda.agregar_producto(nuevo))
 
     def editar_precio(self, tienda: Tienda, codigo: str, nuevo_precio: float) -> str:
