@@ -13,7 +13,8 @@ class Ropa(Producto):
         talla: str,
         color: str,
     ) -> None:
-        """:param codigo: Código único del producto.
+        """
+        :param codigo: Código único del producto.
         :param nombre: Nombre del producto.
         :param marca: Marca del producto.
         :param precio: Precio del producto.
@@ -21,7 +22,8 @@ class Ropa(Producto):
         :param tipo: Tipo de prenda (ej: Camisa, Pantalón, Vestido).
         :param talla: Talla de la prenda (ej: XS, S, M, L, XL).
         :param color: Color de la prenda (ej: Azul, Rojo, Negro).
-        :return: None"""
+        :return: None
+        """
 
         super().__init__(codigo, nombre, marca, precio, stock)
         self.tipo: str = tipo

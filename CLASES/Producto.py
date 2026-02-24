@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*-
 """
 Tienda Online - La Tienda de Gerardo
-Archivo: clases/producto.py
+Archivo: CLASES/Producto.py
 """
 
+
 class Producto:
-    def __init__(self, codigo: str, nombre: str, marca: str, precio: float, stock: int) -> None:
+    def __init__(
+        self, codigo: str, nombre: str, marca: str, precio: float, stock: int
+    ) -> None:
         """
         Args:
             codigo : Código único del producto (ej: "ALI-001")
@@ -15,12 +18,11 @@ class Producto:
             precio : Precio de venta en COP (atributo privado)
             stock  : Cantidad disponible en inventario (atributo privado)
         """
-        self.codigo:   str   = codigo
-        self.nombre:   str   = nombre
-        self.marca:    str   = marca
-        self.__precio: float = precio  
-        self.__stock:  int   = stock   
-
+        self.codigo: str = codigo
+        self.nombre: str = nombre
+        self.marca: str = marca
+        self.__precio: float = precio
+        self.__stock: int = stock
 
     def obtener_precio(self) -> float:
         return self.__precio
@@ -45,9 +47,9 @@ class Producto:
     def reducir_stock(self, cantidad: int) -> bool:
         if cantidad > 0 and cantidad <= self.__stock:
             self.__stock -= cantidad
-            return True    
+            return True
         else:
-            return False   
+            return False
 
     def obtener_info(self) -> str:
         """Retorna información básica. Cada subclase puede sobreescribirlo."""
