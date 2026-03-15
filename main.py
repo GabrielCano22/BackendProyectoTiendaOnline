@@ -2,7 +2,34 @@
 # -*- coding: utf-8 -*-
 """
 Tienda Online - La Tienda de Gerardo
-Archivo principal: main.py
+Sistema de gestión con ORM SQLAlchemy y Neon PostgreSQL
+"""
+
+from src.database.config import SessionLocal, create_tables
+from src.entities.usuario import Usuario
+from src.entities.categoria import Categoria
+from src.entities.producto import Producto
+
+
+def main():
+    print("\n  Iniciando La Tienda de Gerardo...")
+    print("  Conectando a la base de datos Neon...")
+
+    create_tables()
+
+    print("  ✅ Tablas creadas exitosamente en Neon!")
+    print("  Revisa tu base de datos en neon.tech")
+
+
+if __name__ == "__main__":
+    main()
+
+
+"""#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+"""Tienda Online - La Tienda de Gerardo
+Archivo principal: main.py"""
 """
 from Tienda import Tienda
 from Usuario import Cliente, Administrador
@@ -154,3 +181,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+"""
