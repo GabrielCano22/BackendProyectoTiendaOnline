@@ -42,16 +42,6 @@ Producto ──auditoría──► Usuario (id_usuario_creacion, id_usuario_edit
 ├── sistema_gestion.py
 ├── requirements.txt
 ├── .env
-├── CLASES/
-│   ├── Producto.py
-│   ├── Alimentos.py
-│   ├── ProductosElectronicos.py
-│   ├── Ropa.py
-│   ├── Hogar.py
-│   ├── Mascotas.py
-│   ├── CuidadoPersonal.py
-│   ├── Bebes.py
-│   └── Licoreria.py
 ├── src/
 │   ├── database/
 │   │   └── config.py
