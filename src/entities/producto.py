@@ -41,7 +41,9 @@ class Producto(Base):
     categoria_id = Column(
         UUID(as_uuid=True), ForeignKey("categorias.id_categoria"), nullable=False
     )
-
+    id_catalogo = Column(
+        UUID(as_uuid=True), ForeignKey("catalogos.id_catalogo"), nullable=True
+    )
     id_usuario_creacion = Column(
         UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False
     )
@@ -50,6 +52,7 @@ class Producto(Base):
     )
 
     categoria = relationship("Categoria", back_populates="productos")
+    catalogo = relationship("Catalogo", back_populates="productos")
     # usuario = relationship(
     #     "Usuario", back_populates="productos", foreign_keys=[usuario_id]
     # )
