@@ -10,6 +10,8 @@ from src.entities.usuario import Usuario
 from src.crud.usuario_crud import UsuarioCrud
 from src.crud.categoria_crud import CategoriaCrud
 from src.crud.producto_crud import ProductoCrud
+from src.crud.tienda_crud import TiendaCrud
+from src.crud.descuento_crud import DescuentoCrud
 
 
 class SistemaGestion:
@@ -19,6 +21,8 @@ class SistemaGestion:
         self.usuarioCrud = UsuarioCrud(self.db)
         self.categoriaCrud = CategoriaCrud(self.db)
         self.productoCrud = ProductoCrud(self.db)
+        self.tiendaCrud = TiendaCrud(self.db)
+        self.descuentoCrud = DescuentoCrud(self.db)
         self.usuario_actual = None
 
     def __enter__(self):
@@ -492,6 +496,8 @@ class SistemaGestion:
             print("  Conectando a la base de datos Neon...")
             create_tables()
             print("  Base de datos lista.")
+            self.tiendaCrud.inicializar()
+            self.descuentoCrud.seed_descuentos_base()
             self._setup_admin_inicial()
 
             if not self.login():
