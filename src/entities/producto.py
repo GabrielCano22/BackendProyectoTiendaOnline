@@ -65,6 +65,8 @@ class Producto(Base):
         "Usuario",
         foreign_keys=[id_usuario_edita],
     )
+    detalles_carrito = relationship("DetalleCarrito", back_populates="producto")
+    detalles_factura = relationship("DetalleFactura", back_populates="producto")
 
     def __repr__(self):
         return f"<Producto(id_producto={self.id_producto}, nombre='{self.nombre}', precio={self.precio})>"
