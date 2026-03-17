@@ -32,5 +32,8 @@ class Usuario(Base):
         foreign_keys="Producto.id_usuario_creacion",
     )
 
+    carritos = relationship("Carrito", back_populates="usuario")
+    facturas = relationship("Factura", back_populates="usuario")
+
     def __repr__(self):
         return f"<Usuario(id={self.id_usuario}, nombre='{self.nombre_completo}', email='{self.email}')>"

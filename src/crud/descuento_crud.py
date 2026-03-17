@@ -11,9 +11,11 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from src.entities.descuento import Descuento
 
+
 class DescuentoCrud:
     def __init__(self, db: Session):
         self.db = db
+
     def crear(
         self, descripcion: str, unidades_minimas: int, porcentaje: Decimal
     ) -> Descuento:
@@ -31,6 +33,7 @@ class DescuentoCrud:
         self.db.commit()
         self.db.refresh(descuento)
         return descuento
+
     def obtener_por_id(self, id_descuento: UUID) -> Optional[Descuento]:
         """Busca un descuento por su UUID."""
         return (
@@ -38,13 +41,11 @@ class DescuentoCrud:
             .filter(Descuento.id_descuento == id_descuento)
             .first()
         )
+
     def listar(self) -> List[Descuento]:
         """Lista todos los descuentos ordenados por unidades mínimas."""
-        return (
-            self.db.query(Descuento)
-            .order_by(Descuento.unidades_minimas)
-            .all()
-        )
+        return self.db.query(Descuento).order_by(Descuento.unidades_minimas).all()
+
     def actualizar(self, id_descuento: UUID, **kwargs) -> Optional[Descuento]:
         """Actualiza los campos indicados de un descuento existente."""
         descuento = self.obtener_por_id(id_descuento)
@@ -56,6 +57,7 @@ class DescuentoCrud:
         self.db.commit()
         self.db.refresh(descuento)
         return descuento
+
     def eliminar(self, id_descuento: UUID) -> bool:
         """Elimina un descuento de la base de datos."""
         descuento = self.obtener_por_id(id_descuento)
@@ -64,6 +66,7 @@ class DescuentoCrud:
         self.db.delete(descuento)
         self.db.commit()
         return True
+
     def aplicar_descuento(self, total_unidades: int) -> Decimal:
         """
         Retorna el porcentaje de descuento que corresponde
@@ -77,6 +80,7 @@ class DescuentoCrud:
                 porcentaje_aplicable = d.porcentaje
                 break
         return porcentaje_aplicable
+
     def seed_descuentos_base(self) -> None:
         """
         Inserta los descuentos por defecto si la tabla está vacía.
