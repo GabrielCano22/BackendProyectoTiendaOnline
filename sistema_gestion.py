@@ -12,6 +12,8 @@ from src.crud.categoria_crud import CategoriaCrud
 from src.crud.producto_crud import ProductoCrud
 from src.crud.tienda_crud import TiendaCrud
 from src.crud.descuento_crud import DescuentoCrud
+from src.crud.carrito_crud import CarritoCrud
+from src.crud.factura_crud import FacturaCrud
 
 
 class SistemaGestion:
@@ -23,6 +25,8 @@ class SistemaGestion:
         self.productoCrud = ProductoCrud(self.db)
         self.tiendaCrud = TiendaCrud(self.db)
         self.descuentoCrud = DescuentoCrud(self.db)
+        self.carritoCrud = CarritoCrud(self.db)
+        self.facturaCrud = FacturaCrud(self.db)
         self.usuario_actual = None
 
     def __enter__(self):
@@ -124,12 +128,15 @@ class SistemaGestion:
                 print("  1. Gestión de Usuarios")
                 print("  2. Gestión de Categorías")
                 print("  3. Gestión de Productos")
+                print("  4. Gestión de Facturas")
             else:
                 print("  1. Ver catálogo")
                 print("  2. Buscar producto por nombre")
                 print("  3. Buscar producto por categoría")
-            print("  0. Cerrar sesión")
-            print("=" * 50)
+                print("  4. Mi carrito")
+                print("  5. Mis facturas")
+                print("  0. Cerrar sesión")
+                print("=" * 50)
 
             opcion = input("  Seleccione una opción: ").strip()
 
@@ -140,6 +147,8 @@ class SistemaGestion:
                     self.menu_categorias()
                 elif opcion == "3":
                     self.menu_productos()
+                elif opcion == "4":
+                    self.menu_facturas()
                 elif opcion == "0":
                     print(f"\n  Hasta pronto, {self.usuario_actual.nombre_completo}!")
                     break
@@ -152,6 +161,10 @@ class SistemaGestion:
                     self._buscar_por_nombre()
                 elif opcion == "3":
                     self._buscar_por_categoria()
+                elif opcion == "4":
+                    self.menu_carrito()
+                elif opcion == "5":
+                    self.menu_facturas()
                 elif opcion == "0":
                     print(f"\n  Hasta pronto, {self.usuario_actual.nombre_completo}!")
                     break
@@ -190,7 +203,9 @@ class SistemaGestion:
         print(f"  {'-' * 85}")
         for u in usuarios:
             rol = "ADMIN" if u.es_admin else "cliente"
-            print(f"  {u.nombre_completo:<25} {u.nombre_usuario:<20} {u.email:<30} {rol:<10}")
+            print(
+                f"  {u.nombre_completo:<25} {u.nombre_usuario:<20} {u.email:<30} {rol:<10}"
+            )
 
     def _crear_admin(self):
         print("\n" + "-" * 40)
@@ -215,15 +230,17 @@ class SistemaGestion:
     def _eliminar_usuario(self):
         self._listar_usuarios()
         usuario_input = input("\n  Nombre de usuario a eliminar: ").strip()
-        usuario = self.db.query(Usuario).filter(
-            Usuario.nombre_usuario == usuario_input
-        ).first()
+        usuario = (
+            self.db.query(Usuario)
+            .filter(Usuario.nombre_usuario == usuario_input)
+            .first()
+        )
         if not usuario:
             print("  Usuario no encontrado.")
             return
-        confirmar = input(
-            f"  ¿Eliminar '{usuario.nombre_completo}'? (s/n): "
-        ).strip().lower()
+        confirmar = (
+            input(f"  ¿Eliminar '{usuario.nombre_completo}'? (s/n): ").strip().lower()
+        )
         if confirmar == "s":
             self.usuarioCrud.eliminar_usuario(usuario.id_usuario)
             print(f"  Usuario '{usuario.nombre_completo}' eliminado.")
@@ -314,9 +331,7 @@ class SistemaGestion:
         if not categoria:
             print("  Categoría no encontrada.")
             return
-        confirmar = input(
-            f"  ¿Eliminar '{categoria.nombre}'? (s/n): "
-        ).strip().lower()
+        confirmar = input(f"  ¿Eliminar '{categoria.nombre}'? (s/n): ").strip().lower()
         if confirmar == "s":
             self.categoriaCrud.eliminar_categoria(categoria.id_categoria)
             print(f"  Categoría '{categoria.nombre}' eliminada.")
@@ -363,7 +378,9 @@ class SistemaGestion:
         print(f"\n{'=' * 75}")
         print(f"  CATÁLOGO - LA TIENDA DE GERARDO  ({len(productos)} productos)")
         print(f"{'=' * 75}")
-        print(f"  {'CÓDIGO':<12} {'NOMBRE':<25} {'MARCA':<12} {'PRECIO':>12} {'STOCK':>6}")
+        print(
+            f"  {'CÓDIGO':<12} {'NOMBRE':<25} {'MARCA':<12} {'PRECIO':>12} {'STOCK':>6}"
+        )
         print(f"  {'-' * 70}")
         for p in productos:
             print(
@@ -426,7 +443,9 @@ class SistemaGestion:
             stock = int(input("  Stock inicial: ").strip())
             descripcion = input("  Descripción (opcional): ").strip() or None
             nombre_categoria = input("  Nombre de la categoría: ").strip()
-            categoria = self.categoriaCrud.obtener_categoria_por_nombre(nombre_categoria)
+            categoria = self.categoriaCrud.obtener_categoria_por_nombre(
+                nombre_categoria
+            )
             if not categoria:
                 print("  Categoría no encontrada.")
                 return
@@ -480,15 +499,324 @@ class SistemaGestion:
         if not producto:
             print("  Producto no encontrado.")
             return
-        confirmar = input(
-            f"  ¿Eliminar '{producto.nombre}'? (s/n): "
-        ).strip().lower()
+        confirmar = input(f"  ¿Eliminar '{producto.nombre}'? (s/n): ").strip().lower()
         if confirmar == "s":
             self.productoCrud.eliminar_producto(
                 producto.id_producto,
                 self.usuario_actual.id_usuario,
             )
             print(f"  Producto '{producto.nombre}' eliminado.")
+
+    def menu_carrito(self):
+        while True:
+            print("\n" + "-" * 40)
+            print("  MI CARRITO")
+            print("-" * 40)
+            print("  1. Ver carrito actual")
+            print("  2. Agregar producto")
+            print("  3. Cambiar cantidad")
+            print("  4. Eliminar producto")
+            print("  5. Vaciar carrito")
+            print("  6. Generar factura")
+            print("  0. Volver")
+            opcion = input("  Seleccione una opción: ").strip()
+
+            if opcion == "1":
+                self._ver_carrito()
+            elif opcion == "2":
+                self._agregar_al_carrito()
+            elif opcion == "3":
+                self._cambiar_cantidad()
+            elif opcion == "4":
+                self._eliminar_del_carrito()
+            elif opcion == "5":
+                self._vaciar_carrito()
+            elif opcion == "6":
+                self._generar_factura()
+            elif opcion == "0":
+                break
+            else:
+                print("  Opción no válida.")
+
+    def _obtener_o_crear_carrito(self):
+        """Retorna el carrito activo del usuario, o crea uno nuevo si no existe."""
+        carrito = self.carritoCrud.obtener_carrito_activo(
+            self.usuario_actual.id_usuario
+        )
+        if not carrito:
+            carrito = self.carritoCrud.crear_carrito(self.usuario_actual.id_usuario)
+        return carrito
+
+    def _ver_carrito(self):
+        carrito = self.carritoCrud.obtener_carrito_activo(
+            self.usuario_actual.id_usuario
+        )
+        if not carrito:
+            print("\n  Tu carrito está vacío.")
+            return
+        detalles = self.carritoCrud.obtener_detalles(carrito.id_carrito)
+        if not detalles:
+            print("\n  Tu carrito está vacío.")
+            return
+        print(f"\n{'=' * 65}")
+        print(f"  CARRITO  (estado: {carrito.estado})")
+        print(f"{'=' * 65}")
+        print(
+            f"  {'CÓDIGO':<12} {'PRODUCTO':<25} {'PRECIO UNIT':>12} {'CANT':>6} {'SUBTOTAL':>12}"
+        )
+        print(f"  {'-' * 60}")
+        for d in detalles:
+            subtotal = float(d.precio_unitario) * d.cantidad
+            print(
+                f"  {d.producto.codigo:<12} {d.producto.nombre:<25} "
+                f"${float(d.precio_unitario):>10,.0f} "
+                f"{d.cantidad:>6} "
+                f"${subtotal:>10,.0f}"
+            )
+        total = self.carritoCrud.calcular_total(carrito.id_carrito)
+        unidades = self.carritoCrud.contar_unidades(carrito.id_carrito)
+        descuento = self.descuentoCrud.aplicar_descuento(unidades)
+        print(f"  {'-' * 60}")
+        print(f"  Total unidades: {unidades}  |  Descuento aplicable: {descuento}%")
+        print(f"  TOTAL BRUTO: ${float(total):>10,.0f}")
+        print(f"{'=' * 65}")
+
+    def _agregar_al_carrito(self):
+        self._ver_catalogo()
+        try:
+            codigo = input("\n  Código del producto: ").strip().upper()
+            producto = self.productoCrud.obtener_producto_por_codigo(codigo)
+            if not producto:
+                print("  Producto no encontrado.")
+                return
+            cantidad = int(
+                input(f"  Cantidad (stock disponible: {producto.stock}): ").strip()
+            )
+            carrito = self._obtener_o_crear_carrito()
+            self.carritoCrud.agregar_producto(
+                carrito.id_carrito, producto.id_producto, cantidad
+            )
+            print(f"\n  '{producto.nombre}' x{cantidad} agregado al carrito.")
+        except ValueError as e:
+            print(f"\n  Error: {e}")
+
+    def _cambiar_cantidad(self):
+        self._ver_carrito()
+        carrito = self.carritoCrud.obtener_carrito_activo(
+            self.usuario_actual.id_usuario
+        )
+        if not carrito:
+            return
+        try:
+            codigo = input("\n  Código del producto a modificar: ").strip().upper()
+            producto = self.productoCrud.obtener_producto_por_codigo(codigo)
+            if not producto:
+                print("  Producto no encontrado.")
+                return
+            nueva_cantidad = int(input("  Nueva cantidad (0 para eliminar): ").strip())
+            self.carritoCrud.actualizar_cantidad(
+                carrito.id_carrito, producto.id_producto, nueva_cantidad
+            )
+            if nueva_cantidad == 0:
+                print("  Producto eliminado del carrito.")
+            else:
+                print(f"  Cantidad actualizada a {nueva_cantidad}.")
+        except ValueError as e:
+            print(f"\n  Error: {e}")
+
+    def _eliminar_del_carrito(self):
+        self._ver_carrito()
+        carrito = self.carritoCrud.obtener_carrito_activo(
+            self.usuario_actual.id_usuario
+        )
+        if not carrito:
+            return
+        codigo = input("\n  Código del producto a eliminar: ").strip().upper()
+        producto = self.productoCrud.obtener_producto_por_codigo(codigo)
+        if not producto:
+            print("  Producto no encontrado.")
+            return
+        eliminado = self.carritoCrud.eliminar_producto(
+            carrito.id_carrito, producto.id_producto
+        )
+        if eliminado:
+            print(f"  '{producto.nombre}' eliminado del carrito.")
+        else:
+            print("  El producto no estaba en el carrito.")
+
+    def _vaciar_carrito(self):
+        carrito = self.carritoCrud.obtener_carrito_activo(
+            self.usuario_actual.id_usuario
+        )
+        if not carrito:
+            print("  No tienes un carrito activo.")
+            return
+        confirmar = input("  ¿Vaciar todo el carrito? (s/n): ").strip().lower()
+        if confirmar == "s":
+            self.carritoCrud.vaciar_carrito(carrito.id_carrito)
+            print("  Carrito vaciado.")
+
+    def _generar_factura(self):
+        self._ver_carrito()
+        carrito = self.carritoCrud.obtener_carrito_activo(
+            self.usuario_actual.id_usuario
+        )
+        if not carrito:
+            print("  No tienes un carrito activo.")
+            return
+        confirmar = (
+            input("\n  ¿Confirmar compra y generar factura? (s/n): ").strip().lower()
+        )
+        if confirmar == "s":
+            try:
+                factura = self.facturaCrud.generar_factura(
+                    carrito.id_carrito,
+                    self.usuario_actual.id_usuario,
+                )
+                print(f"\n{'=' * 50}")
+                print("  ¡FACTURA GENERADA EXITOSAMENTE!")
+                print(f"{'=' * 50}")
+                print(f"  ID Factura   : {str(factura.id_factura)[:8]}...")
+                print(f"  Total bruto  : ${float(factura.total_bruto):>10,.0f}")
+                print(
+                    f"  Descuento    : {float(factura.porcentaje_descuento)}%  -${float(factura.total_descuento):>8,.0f}"
+                )
+                print(f"  TOTAL A PAGAR: ${float(factura.total_neto):>10,.0f}")
+                print(f"{'=' * 50}")
+            except ValueError as e:
+                print(f"\n  Error: {e}")
+
+    # ------------------------------------------------------------------ #
+    #  Menú de Facturas                                                    #
+    # ------------------------------------------------------------------ #
+
+    def menu_facturas(self):
+        while True:
+            print("\n" + "-" * 40)
+            print("  MIS FACTURAS")
+            print("-" * 40)
+            print("  1. Ver mis facturas")
+            print("  2. Ver detalle de una factura")
+            if self.usuario_actual.es_admin:
+                print("  3. Ver todas las facturas")
+                print("  4. Marcar factura como pagada")
+                print("  5. Anular factura")
+            print("  0. Volver")
+            opcion = input("  Seleccione una opción: ").strip()
+
+            if opcion == "1":
+                self._listar_mis_facturas()
+            elif opcion == "2":
+                self._ver_detalle_factura()
+            elif opcion == "3" and self.usuario_actual.es_admin:
+                self._listar_todas_las_facturas()
+            elif opcion == "4" and self.usuario_actual.es_admin:
+                self._marcar_pagada()
+            elif opcion == "5" and self.usuario_actual.es_admin:
+                self._anular_factura()
+            elif opcion == "0":
+                break
+            else:
+                print("  Opción no válida.")
+
+    def _listar_mis_facturas(self):
+        facturas = self.facturaCrud.obtener_facturas_por_usuario(
+            self.usuario_actual.id_usuario
+        )
+        self._imprimir_facturas(facturas)
+
+    def _listar_todas_las_facturas(self):
+        facturas = self.facturaCrud.obtener_todas_las_facturas()
+        self._imprimir_facturas(facturas)
+
+    def _imprimir_facturas(self, facturas):
+        if not facturas:
+            print("\n  No hay facturas registradas.")
+            return
+        print(
+            f"\n  {'ID':<12} {'TOTAL NETO':>12} {'DESCUENTO':>10} {'ESTADO':<12} {'FECHA'}"
+        )
+        print(f"  {'-' * 65}")
+        for f in facturas:
+            fecha = (
+                f.fecha_creacion.strftime("%Y-%m-%d %H:%M") if f.fecha_creacion else "-"
+            )
+            print(
+                f"  {str(f.id_factura)[:8]+'...':<12} "
+                f"${float(f.total_neto):>10,.0f} "
+                f"{float(f.porcentaje_descuento):>9.0f}% "
+                f"{f.estado:<12} "
+                f"{fecha}"
+            )
+
+    def _ver_detalle_factura(self):
+        self._listar_mis_facturas()
+        id_input = input("\n  Primeros 8 caracteres del ID de la factura: ").strip()
+        facturas = self.facturaCrud.obtener_facturas_por_usuario(
+            self.usuario_actual.id_usuario
+        )
+        factura = next(
+            (f for f in facturas if str(f.id_factura).startswith(id_input)), None
+        )
+        if not factura:
+            print("  Factura no encontrada.")
+            return
+        detalles = self.facturaCrud.obtener_detalles_por_factura(factura.id_factura)
+        print(f"\n{'=' * 60}")
+        print(f"  DETALLE FACTURA  (estado: {factura.estado})")
+        print(f"{'=' * 60}")
+        print(f"  {'PRODUCTO':<25} {'P.UNIT':>12} {'CANT':>6} {'SUBTOTAL':>12}")
+        print(f"  {'-' * 58}")
+        for d in detalles:
+            print(
+                f"  {d.nombre_producto:<25} "
+                f"${float(d.precio_unitario):>10,.0f} "
+                f"{d.cantidad:>6} "
+                f"${float(d.subtotal):>10,.0f}"
+            )
+        print(f"  {'-' * 58}")
+        print(f"  Total bruto  : ${float(factura.total_bruto):>10,.0f}")
+        print(
+            f"  Descuento    : {float(factura.porcentaje_descuento):.0f}%  -${float(factura.total_descuento):>8,.0f}"
+        )
+        print(f"  TOTAL NETO   : ${float(factura.total_neto):>10,.0f}")
+        print(f"{'=' * 60}")
+
+    def _marcar_pagada(self):
+        self._listar_todas_las_facturas()
+        id_input = input("\n  Primeros 8 caracteres del ID: ").strip()
+        facturas = self.facturaCrud.obtener_todas_las_facturas()
+        factura = next(
+            (f for f in facturas if str(f.id_factura).startswith(id_input)), None
+        )
+        if not factura:
+            print("  Factura no encontrada.")
+            return
+        try:
+            self.facturaCrud.marcar_como_pagada(factura.id_factura)
+            print("  Factura marcada como pagada.")
+        except ValueError as e:
+            print(f"\n  Error: {e}")
+
+    def _anular_factura(self):
+        self._listar_todas_las_facturas()
+        id_input = input("\n  Primeros 8 caracteres del ID: ").strip()
+        facturas = self.facturaCrud.obtener_todas_las_facturas()
+        factura = next(
+            (f for f in facturas if str(f.id_factura).startswith(id_input)), None
+        )
+        if not factura:
+            print("  Factura no encontrada.")
+            return
+        confirmar = (
+            input(f"  ¿Anular factura y devolver stock? (s/n): ").strip().lower()
+        )
+        if confirmar == "s":
+            try:
+                self.facturaCrud.anular_factura(factura.id_factura)
+                print("  Factura anulada y stock devuelto.")
+            except ValueError as e:
+                print(f"\n  Error: {e}")
 
     def ejecutar(self):
         try:
