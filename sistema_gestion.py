@@ -561,12 +561,14 @@ class SistemaGestion:
         print(f"\n{'=' * 65}")
         print(f"  CARRITO  (estado: {carrito.estado})")
         print(f"{'=' * 65}")
-        print(f"  {'PRODUCTO':<25} {'PRECIO UNIT':>12} {'CANT':>6} {'SUBTOTAL':>12}")
+        print(
+            f"  {'CÓDIGO':<12} {'PRODUCTO':<25} {'PRECIO UNIT':>12} {'CANT':>6} {'SUBTOTAL':>12}"
+        )
         print(f"  {'-' * 60}")
         for d in detalles:
             subtotal = float(d.precio_unitario) * d.cantidad
             print(
-                f"  {d.producto.nombre:<25} "
+                f"  {d.producto.codigo:<12} {d.producto.nombre:<25} "
                 f"${float(d.precio_unitario):>10,.0f} "
                 f"{d.cantidad:>6} "
                 f"${subtotal:>10,.0f}"
