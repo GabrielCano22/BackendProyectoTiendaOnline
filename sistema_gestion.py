@@ -129,6 +129,9 @@ class SistemaGestion:
                 print("  2. Gestión de Categorías")
                 print("  3. Gestión de Productos")
                 print("  4. Gestión de Facturas")
+                print("  5. Gestión de Descuentos")
+                print("  0. Cerrar sesión")
+                print("=" * 50)
             else:
                 print("  1. Ver catálogo")
                 print("  2. Buscar producto por nombre")
@@ -149,8 +152,11 @@ class SistemaGestion:
                     self.menu_productos()
                 elif opcion == "4":
                     self.menu_facturas()
+                elif opcion == "5":
+                    self.menu_descuentos()
                 elif opcion == "0":
                     print(f"\n  Hasta pronto, {self.usuario_actual.nombre_completo}!")
+                    self.usuario_actual = None
                     break
                 else:
                     print("  Opción no válida.")
@@ -167,6 +173,7 @@ class SistemaGestion:
                     self.menu_facturas()
                 elif opcion == "0":
                     print(f"\n  Hasta pronto, {self.usuario_actual.nombre_completo}!")
+                    self.usuario_actual = None
                     break
                 else:
                     print("  Opción no válida.")
@@ -579,6 +586,9 @@ class SistemaGestion:
         print(f"  {'-' * 60}")
         print(f"  Total unidades: {unidades}  |  Descuento aplicable: {descuento}%")
         print(f"  TOTAL BRUTO: ${float(total):>10,.0f}")
+        if descuento > 0:
+            total_neto = total - (total * descuento / 100)
+            print(f"  TOTAL A PAGAR  : ${float(total_neto):>10,.0f}  ({descuento}% dto.)")
         print(f"{'=' * 65}")
 
     def _agregar_al_carrito(self):
@@ -685,10 +695,6 @@ class SistemaGestion:
                 print(f"{'=' * 50}")
             except ValueError as e:
                 print(f"\n  Error: {e}")
-
-    # ------------------------------------------------------------------ #
-    #  Menú de Facturas                                                    #
-    # ------------------------------------------------------------------ #
 
     def menu_facturas(self):
         while True:
@@ -817,7 +823,100 @@ class SistemaGestion:
                 print("  Factura anulada y stock devuelto.")
             except ValueError as e:
                 print(f"\n  Error: {e}")
+                
+    def menu_descuentos(self):
+        while True:
+            print("\n" + "-" * 40)
+            print("  GESTIÓN DE DESCUENTOS")
+            print("-" * 40)
+            print("  1. Listar descuentos")
+            print("  2. Crear descuento")
+            print("  3. Actualizar descuento")
+            print("  4. Eliminar descuento")
+            print("  0. Volver")
+            opcion = input("  Seleccione una opción: ").strip()
 
+            if opcion == "1":
+                self._listar_descuentos()
+            elif opcion == "2":
+                self._crear_descuento()
+            elif opcion == "3":
+                self._actualizar_descuento()
+            elif opcion == "4":
+                self._eliminar_descuento()
+            elif opcion == "0":
+                break
+            else:
+                print("  Opción no válida.")
+
+    def _listar_descuentos(self):
+        descuentos = self.descuentoCrud.listar()
+        if not descuentos:
+            print("\n  No hay descuentos registrados.")
+            return
+        print(f"\n  {'DESCRIPCIÓN':<35} {'UNIDADES MÍN':>13} {'PORCENTAJE':>11}")
+        print(f"  {'-' * 62}")
+        for d in descuentos:
+            print(
+                f"  {d.descripcion:<35} {d.unidades_minimas:>13} {float(d.porcentaje):>10.2f}%"
+            )
+
+    def _crear_descuento(self):
+        print("\n" + "-" * 40)
+        print("  CREAR DESCUENTO")
+        print("-" * 40)
+        try:
+            descripcion = input("  Descripción: ").strip()
+            unidades_minimas = int(input("  Unidades mínimas: ").strip())
+            porcentaje = float(input("  Porcentaje (ej: 15): ").strip())
+            from decimal import Decimal
+            self.descuentoCrud.crear(descripcion, unidades_minimas, Decimal(str(porcentaje)))
+            print(f"\n  Descuento '{descripcion}' creado exitosamente.")
+        except ValueError as e:
+            print(f"\n  Error: {e}")
+
+    def _actualizar_descuento(self):
+        self._listar_descuentos()
+        descuentos = self.descuentoCrud.listar()
+        if not descuentos:
+            return
+        try:
+            descripcion = input("\n  Descripción del descuento a actualizar: ").strip()
+            descuento = next((d for d in descuentos if d.descripcion == descripcion), None)
+            if not descuento:
+                print("  Descuento no encontrado.")
+                return
+            nuevo_porcentaje = input(f"  Nuevo porcentaje ({descuento.porcentaje}): ").strip()
+            nuevas_unidades = input(f"  Nuevas unidades mínimas ({descuento.unidades_minimas}): ").strip()
+            cambios = {}
+            if nuevo_porcentaje:
+                from decimal import Decimal
+                cambios["porcentaje"] = Decimal(nuevo_porcentaje)
+            if nuevas_unidades:
+                cambios["unidades_minimas"] = int(nuevas_unidades)
+            if cambios:
+                self.descuentoCrud.actualizar(descuento.id_descuento, **cambios)
+                print("  Descuento actualizado exitosamente.")
+            else:
+                print("  No se realizaron cambios.")
+        except ValueError as e:
+            print(f"\n  Error: {e}")
+
+    def _eliminar_descuento(self):
+        self._listar_descuentos()
+        descuentos = self.descuentoCrud.listar()
+        if not descuentos:
+            return
+        descripcion = input("\n  Descripción del descuento a eliminar: ").strip()
+        descuento = next((d for d in descuentos if d.descripcion == descripcion), None)
+        if not descuento:
+            print("  Descuento no encontrado.")
+            return
+        confirmar = input(f"  ¿Eliminar '{descuento.descripcion}'? (s/n): ").strip().lower()
+        if confirmar == "s":
+            self.descuentoCrud.eliminar(descuento.id_descuento)
+            print(f"  Descuento '{descuento.descripcion}' eliminado.")
+        
     def ejecutar(self):
         try:
             print("\n  Iniciando La Tienda de Gerardo...")
@@ -827,12 +926,11 @@ class SistemaGestion:
             self.tiendaCrud.inicializar()
             self.descuentoCrud.seed_descuentos_base()
             self._setup_admin_inicial()
-
-            if not self.login():
-                print("\n  Saliendo del sistema. ¡Hasta luego!")
-                return
-
-            self.menu_principal()
+            while True:
+                if not self.login():
+                    print("\n  Saliendo del sistema. ¡Hasta luego!")
+                    break
+                self.menu_principal()
 
         except KeyboardInterrupt:
             print("\n\n  Sistema interrumpido.")

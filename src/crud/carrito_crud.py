@@ -20,10 +20,6 @@ class CarritoCrud:
     def __init__(self, db: Session):
         self.db = db
 
-    # ------------------------------------------------------------------ #
-    #  Carrito                                                             #
-    # ------------------------------------------------------------------ #
-
     def crear_carrito(self, usuario_id: UUID) -> Carrito:
         """Crea un carrito nuevo en estado 'activo' para el usuario."""
         carrito = Carrito(
@@ -74,10 +70,6 @@ class CarritoCrud:
         self.db.refresh(carrito)
         return carrito
 
-    # ------------------------------------------------------------------ #
-    #  Detalle de carrito                                                  #
-    # ------------------------------------------------------------------ #
-
     def agregar_producto(
         self, carrito_id: UUID, producto_id: UUID, cantidad: int
     ) -> DetalleCarrito:
@@ -108,7 +100,6 @@ class CarritoCrud:
                 f"Stock insuficiente. Disponible: {producto.stock}, solicitado: {cantidad}"
             )
 
-        # Si ya existe el detalle, se suma la cantidad
         detalle = (
             self.db.query(DetalleCarrito)
             .filter(
@@ -211,10 +202,6 @@ class CarritoCrud:
         ).delete()
         self.db.commit()
         return True
-
-    # ------------------------------------------------------------------ #
-    #  Utilidades                                                          #
-    # ------------------------------------------------------------------ #
 
     def calcular_total(self, carrito_id: UUID) -> Decimal:
         """Retorna el total bruto del carrito (sin descuentos)."""

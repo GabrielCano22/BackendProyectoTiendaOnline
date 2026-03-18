@@ -10,16 +10,16 @@ Proyecto de tienda online desarrollado en Python con SQLAlchemy ORM y base de da
 
 | Entidad | Tabla | Auditoría | Descripción |
 |---|---|---|---|
-| Usuario | `usuarios` | — | Clase base (Cliente y Administrador) |
-| Tienda | `tiendas` | — | Entidad raíz del sistema |
-| Catalogo | `catalogos` | — | Pertenece a una Tienda, agrupa los productos |
+| Usuario | `usuarios` | ✅ | Clase base (Cliente y Administrador) |
+| Tienda | `tiendas` | ✅ | Entidad raíz del sistema |
+| Catalogo | `catalogos` | ✅ | Pertenece a una Tienda, agrupa los productos |
 | Categoria | `categorias` | ✅ | Clasificación de productos |
 | Producto | `productos` | ✅ | Pertenece a un Catálogo y una Categoría |
-| Descuento | `descuentos` | — | Reglas de descuento por volumen de compra |
-| Carrito | `carritos` | — | Pertenece a un Cliente |
-| DetalleCarrito | `detalle_carrito` | — | Ítems dentro de un carrito |
-| Factura | `facturas` | — | Generada tras una compra |
-| DetalleFactura | `detalle_factura` | — | Snapshot de ítems comprados |
+| Descuento | `descuentos` | ✅ | Reglas de descuento por volumen de compra |
+| Carrito | `carritos` | ✅ | Pertenece a un Cliente |
+| DetalleCarrito | `detalle_carrito` | ✅ | Ítems dentro de un carrito |
+| Factura | `facturas` | ✅ | Generada tras una compra |
+| DetalleFactura | `detalle_factura` | ✅ | Snapshot de ítems comprados |
 
 ## Relaciones
 ```
@@ -41,7 +41,9 @@ Producto ──auditoría──► Usuario (id_usuario_creacion, id_usuario_edit
 ├── main.py
 ├── sistema_gestion.py
 ├── requirements.txt
+├── alembic.ini
 ├── .env
+├── .env.example
 ├── src/
 │   ├── database/
 │   │   └── config.py
@@ -65,6 +67,7 @@ Producto ──auditoría──► Usuario (id_usuario_creacion, id_usuario_edit
 │       ├── carrito_crud.py
 │       └── factura_crud.py
 └── migrations/
+    ├── env.py
     └── versions/
         └── 001_initial.py
 ```
@@ -92,10 +95,13 @@ source .venv/bin/activate        # Linux/Mac
 pip install -r requirements.txt
 
 # 4. Configurar variables de entorno
-# Crear un archivo .env en la raíz con:
-# DATABASE_URL=postgresql://usuario:contrasena@host/neondb?sslmode=require
+cp .env.example .env
+# Editar .env con la DATABASE_URL de Neon
 
-# 5. Ejecutar el sistema
+# 5. Ejecutar migraciones
+python -m alembic upgrade head
+
+# 6. Ejecutar el sistema
 python main.py
 ```
 
@@ -106,13 +112,14 @@ Crear un archivo `.env` en la raíz del proyecto:
 DATABASE_URL=postgresql://usuario:contrasena@host/neondb?sslmode=require
 ```
 
-No subir el `.env` al repositorio.
 
 ## Funcionalidades
 
 - Registro e inicio de sesión con roles (Cliente / Administrador)
 - Tienda con catálogo de productos organizados por categorías
-- Carrito de compras con descuentos automáticos por volumen (≥3 unidades: 15%, ≥5 unidades: 30%)
+- Carrito de compras con previsualización de descuento y total a pagar
+- Descuentos configurables por el administrador según volumen de compra
 - Generación de facturas con detalle persistido en base de datos
 - Auditoría en Categorías y Productos (quién creó, quién editó)
-- Panel de administrador: gestión de usuarios, categorías y productos
+- Eliminación lógica de usuarios (desactivación sin borrar registros)
+- Panel de administrador: gestión de usuarios, categorías, productos y descuentos

@@ -108,7 +108,7 @@ class UsuarioCrud:
         if not usuario:
             return False
         
-        self.db.delete(usuario) 
+        usuario.activo = False
         self.db.commit()
         
         return True
