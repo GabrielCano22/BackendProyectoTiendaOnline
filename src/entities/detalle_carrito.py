@@ -4,9 +4,7 @@ from sqlalchemy import Column, DateTime, Integer, Numeric, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-
 from src.database.config import Base
-
 
 class DetalleCarrito(Base):
     __tablename__ = "detalle_carritos"
@@ -29,7 +27,6 @@ class DetalleCarrito(Base):
     fecha_creacion = Column(DateTime(timezone=True), server_default=func.now())
     fecha_edicion = Column(DateTime(timezone=True), onupdate=func.now())
 
-    # Relaciones
     carrito = relationship("Carrito", back_populates="detalles")
     producto = relationship("Producto", back_populates="detalles_carrito")
 

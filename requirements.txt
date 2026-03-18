@@ -1,15 +1,9 @@
-#ORM Y BASE DE DATOS
-SQLAlchemy==2.0.0
-psycopg2-binary==2.9.0
-
-# VALIDACION Y ENTORNO
-
-python-dotenv>=1.0.0
-
-#migracion
-alembic==1.13.1
-
-sqlalchemy==2.0.23
+# ORM y base de datos
+SQLAlchemy==2.0.23
 psycopg2-binary==2.9.9
-alembic==1.13.1
+
+# Entorno
 python-dotenv==1.0.0
+
+# Migraciones
+alembic==1.13.1
