@@ -27,8 +27,9 @@ engine = create_engine(
     DATABASE_URL,
     echo=False,  # Cambiar a True para ver consultas SQL
     pool_pre_ping=True,  # Verificar conexión antes de usar
-    pool_recycle=300,  # Reciclar conexiones cada 5 minutos
-    connect_args={"sslmode": "require"},  # Requerir SSL para Neon
+    pool_recycle=60,  # Reciclar conexiones cada minuto
+    max_overflow=2,
+    connect_args={"sslmode": "require", "keepalives": 1, "keepalives_idle": 30, "keepalives_interval": 10, "keepalives_count": 5,},  # Requerir SSL para Neon
 )
 
 # Crear la sesión

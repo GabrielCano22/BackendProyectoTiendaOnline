@@ -24,10 +24,6 @@ class FacturaCrud:
     def __init__(self, db: Session):
         self.db = db
 
-    # ------------------------------------------------------------------ #
-    #  Factura                                                             #
-    # ------------------------------------------------------------------ #
-
     def generar_factura(self, carrito_id: UUID, usuario_id: UUID) -> Factura:
         """
         Genera una factura a partir de un carrito activo.
@@ -50,7 +46,6 @@ class FacturaCrud:
         if not detalles_carrito:
             raise ValueError("No se puede facturar un carrito vacío")
 
-        # Validar stock antes de procesar
         for detalle in detalles_carrito:
             producto = (
                 self.db.query(Producto)
@@ -67,7 +62,6 @@ class FacturaCrud:
                     f"Disponible: {producto.stock}, solicitado: {detalle.cantidad}"
                 )
 
-        # Calcular totales
         total_unidades = carrito_crud.contar_unidades(carrito_id)
         total_bruto = carrito_crud.calcular_total(carrito_id)
         porcentaje_descuento = descuento_crud.aplicar_descuento(total_unidades)
@@ -76,7 +70,6 @@ class FacturaCrud:
         ).quantize(Decimal("0.01"))
         total_neto = total_bruto - total_descuento
 
-        # Crear la factura
         factura = Factura(
             id_usuario=usuario_id,
             id_carrito=carrito_id,
@@ -84,12 +77,11 @@ class FacturaCrud:
             porcentaje_descuento=porcentaje_descuento,
             total_descuento=total_descuento,
             total_neto=total_neto,
-            estado="pendiente",
+            estado="Pagada",
         )
         self.db.add(factura)
-        self.db.flush()  # Para obtener el id_factura antes del commit
+        self.db.flush()
 
-        # Crear detalles de factura y descontar stock
         for detalle in detalles_carrito:
             producto = (
                 self.db.query(Producto)
@@ -110,10 +102,8 @@ class FacturaCrud:
             )
             self.db.add(detalle_factura)
 
-            # Descontar stock del producto
             producto.stock -= detalle.cantidad
 
-        # Finalizar el carrito
         carrito_crud.finalizar_carrito(carrito_id)
 
         self.db.commit()
@@ -155,7 +145,6 @@ class FacturaCrud:
         if factura.estado != "pendiente":
             raise ValueError("Solo se pueden anular facturas en estado 'pendiente'")
 
-        # Devolver stock
         detalles = self.obtener_detalles_por_factura(factura_id)
         for detalle in detalles:
             producto = (
@@ -171,9 +160,6 @@ class FacturaCrud:
         self.db.refresh(factura)
         return factura
 
-    # ------------------------------------------------------------------ #
-    #  Detalle de factura                                                  #
-    # ------------------------------------------------------------------ #
 
     def obtener_detalles_por_factura(self, factura_id: UUID) -> List[DetalleFactura]:
         """Lista todos los ítems de una factura."""
