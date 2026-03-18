@@ -1,13 +1,10 @@
 import uuid
 
-
 from sqlalchemy import Column, DateTime, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-
 from src.database.config import Base
-
 
 class Categoria(Base):
     """Modelo de Categoría"""
