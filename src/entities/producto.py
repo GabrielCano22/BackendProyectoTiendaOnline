@@ -53,9 +53,7 @@ class Producto(Base):
 
     categoria = relationship("Categoria", back_populates="productos")
     catalogo = relationship("Catalogo", back_populates="productos")
-    # usuario = relationship(
-    #     "Usuario", back_populates="productos", foreign_keys=[usuario_id]
-    # )
+   
 
     usuario_creacion = relationship(
         "Usuario",
