@@ -77,7 +77,8 @@ class FacturaCrud:
             porcentaje_descuento=porcentaje_descuento,
             total_descuento=total_descuento,
             total_neto=total_neto,
-            estado="Pagada",
+            estado="pendiente",
+            # Condicional
         )
         self.db.add(factura)
         self.db.flush()
@@ -159,7 +160,6 @@ class FacturaCrud:
         self.db.commit()
         self.db.refresh(factura)
         return factura
-
 
     def obtener_detalles_por_factura(self, factura_id: UUID) -> List[DetalleFactura]:
         """Lista todos los ítems de una factura."""
