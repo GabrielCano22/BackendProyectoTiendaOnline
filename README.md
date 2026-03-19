@@ -4,7 +4,7 @@ Proyecto de tienda online desarrollado en Python con SQLAlchemy ORM y base de da
 
 ## Video demostrativo
 
-> 🎥 URL del video: _[pendiente de agregar]_
+> 🎥 URL del video: [https://youtu.be/QsUPNqouevY]
 
 ## Entidades
 
