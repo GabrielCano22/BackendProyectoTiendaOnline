@@ -8,13 +8,10 @@ Archivo: src/crud/carrito_crud.py
 from decimal import Decimal
 from typing import List, Optional
 from uuid import UUID
-
 from sqlalchemy.orm import Session
-
 from src.entities.carrito import Carrito
 from src.entities.detalle_carrito import DetalleCarrito
 from src.entities.producto import Producto
-
 
 class CarritoCrud:
     def __init__(self, db: Session):

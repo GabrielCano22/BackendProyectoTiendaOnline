@@ -11,7 +11,6 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from src.entities.descuento import Descuento
 
-
 class DescuentoCrud:
     def __init__(self, db: Session):
         self.db = db

@@ -8,9 +8,7 @@ Archivo: src/crud/factura_crud.py
 from decimal import Decimal
 from typing import List, Optional
 from uuid import UUID
-
 from sqlalchemy.orm import Session
-
 from src.entities.factura import Factura
 from src.entities.detalle_factura import DetalleFactura
 from src.entities.carrito import Carrito
@@ -18,7 +16,6 @@ from src.entities.detalle_carrito import DetalleCarrito
 from src.entities.producto import Producto
 from src.crud.carrito_crud import CarritoCrud
 from src.crud.descuento_crud import DescuentoCrud
-
 
 class FacturaCrud:
     def __init__(self, db: Session):
@@ -78,7 +75,6 @@ class FacturaCrud:
             total_descuento=total_descuento,
             total_neto=total_neto,
             estado="pendiente",
-            # Condicional
         )
         self.db.add(factura)
         self.db.flush()

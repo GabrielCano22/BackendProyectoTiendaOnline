@@ -1,25 +1,19 @@
 import os
 from logging.config import fileConfig
 from pathlib import Path
-
 from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# Cargar el .env
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
-# Configuración de Alembic
 config = context.config
 
-# Configurar logging
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Inyectar la DATABASE_URL desde el .env
 config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
 
-# Importar todos los modelos para que Alembic los reconozca
 from src.database.config import Base
 from src.entities.usuario import Usuario
 from src.entities.tienda import Tienda
