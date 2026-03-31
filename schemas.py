@@ -10,7 +10,6 @@ from uuid import UUID
 from pydantic import BaseModel, EmailStr
 from src.core.responses import RespuestaAPI
 
-
 # ─────────────────────────── USUARIO (Gabriel) ────────────────────────────
 
 
@@ -61,18 +60,115 @@ class LoginResponse(BaseModel):
 
 # ─────────────────────────── CATEGORIA (Kevin) ────────────────────────────
 # Kevin: agrega aqui CategoriaBase, CategoriaCreate, CategoriaUpdate, CategoriaResponse
+class CategoriaBase(BaseModel):
+    nombre: str
+    descripcion: Optional[str] = None
+
+
+class CategoriaCreate(CategoriaBase):
+    pass
+
+
+class CategoriaUpdate(BaseModel):
+    nombre: Optional[str] = None
+    descripcion: Optional[str] = None
+
+
+class CategoriaResponse(CategoriaBase):
+    id_categoria: UUID
+    fecha_creacion: datetime
+    fecha_edicion: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
 
 
 # ─────────────────────────── PRODUCTO (Kevin) ────────────────────────────
 # Kevin: agrega aqui ProductoBase, ProductoCreate, ProductoUpdate, ProductoResponse
 
 
+class ProductoBase(BaseModel):
+    nombre: str
+    tipo_producto: str
+    codigo: str
+    marca: str
+    precio: Decimal
+    stock: int = 0
+    descripcion: Optional[str] = None
+    categoria_id: UUID
+
+
+class ProductoCreate(ProductoBase):
+    pass
+
+
+class ProductoUpdate(BaseModel):
+    nombre: Optional[str] = None
+    tipo_producto: Optional[str] = None
+    codigo: Optional[str] = None
+    marca: Optional[str] = None
+    precio: Optional[Decimal] = None
+    stock: Optional[int] = None
+    descripcion: Optional[str] = None
+    categoria_id: Optional[UUID] = None
+
+
+class ProductoResponse(ProductoBase):
+    id_producto: UUID
+    eliminado: bool
+    fecha_creacion: datetime
+    fecha_edicion: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
 # ─────────────────────────── DESCUENTO (Kevin) ────────────────────────────
 # Kevin: agrega aqui DescuentoBase, DescuentoCreate, DescuentoUpdate, DescuentoResponse
 
 
+class DescuentoBase(BaseModel):
+    descripcion: str
+    unidades_minimas: int
+    porcentaje: Decimal
+
+
+class DescuentoCreate(DescuentoBase):
+    pass
+
+
+class DescuentoUpdate(BaseModel):
+    descripcion: Optional[str] = None
+    unidades_minimas: Optional[int] = None
+    porcentaje: Optional[Decimal] = None
+
+
+class DescuentoResponse(DescuentoBase):
+    id_descuento: UUID
+
+    class Config:
+        from_attributes = True
+
+
 # ─────────────────────────── TIENDA / CATALOGO (Kevin) ────────────────────────────
 # Kevin: agrega aqui TiendaResponse, CatalogoResponse
+
+
+class TiendaResponse(BaseModel):
+    id_tienda: UUID
+    nombre: str
+
+    class Config:
+        from_attributes = True
+
+
+class CatalogoResponse(BaseModel):
+    id_catalogo: UUID
+    id_tienda: UUID
+    descripcion: Optional[str] = None
+
+    class Config:
+        from_attributes = True
 
 
 class AgregarAlCarritoRequest(BaseModel):

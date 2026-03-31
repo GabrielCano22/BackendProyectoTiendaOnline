@@ -3,6 +3,7 @@
 """
 La Tienda de Gerardo — Backend FastAPI
 """
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,10 +17,10 @@ from src.endpoints.usuarios import router as usuarios_router
 from src.endpoints.carrito import router as carrito_router
 from src.endpoints.facturas import router as facturas_router
 
-# Pendiente Kevin
-# from src.endpoints.productos import router as productos_router
-# from src.endpoints.categorias import router as categorias_router
-# from src.endpoints.descuentos_tienda import router as descuentos_router
+
+from src.endpoints.categorias import router as categorias_router
+from src.endpoints.productos import router as productos_router
+from src.endpoints.descuentos_tienda import router as descuentos_tienda_router
 
 app = FastAPI(
     title="La Tienda de Gerardo — API",
@@ -44,10 +45,9 @@ app.include_router(usuarios_router)
 app.include_router(carrito_router)
 app.include_router(facturas_router)
 
-# Pendiente Kevin
-# app.include_router(productos_router)
-# app.include_router(categorias_router)
-# app.include_router(descuentos_router)
+app.include_router(productos_router)
+app.include_router(categorias_router)
+app.include_router(descuentos_tienda_router)
 
 
 @app.on_event("startup")
@@ -90,8 +90,6 @@ async def root():
             "usuarios": "/usuarios",
             "carrito": "/carrito",
             "facturas": "/facturas",
-        },
-        "endpoints_pendientes": {
             "productos": "/productos",
             "categorias": "/categorias",
             "descuentos": "/descuentos",
