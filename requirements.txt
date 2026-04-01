@@ -1,6 +1,6 @@
 # ORM y base de datos
 SQLAlchemy==2.0.23
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.11
 
 # Entorno
 python-dotenv==1.0.0

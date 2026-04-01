@@ -6,10 +6,12 @@ from typing import List
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from src.auth.dependencies import require_admin
 from src.crud.descuento_crud import DescuentoCrud
 from src.crud.tienda_crud import TiendaCrud
 from src.database.config import get_db
 from src.core.responses import RespuestaAPI
+from src.entities.usuario import Usuario
 from schemas import (
     CatalogoResponse,
     DescuentoCreate,
@@ -36,8 +38,12 @@ async def obtener_descuento(descuento_id: UUID, db: Session = Depends(get_db)):
     return descuento
 
 @router.post("/descuentos", response_model=DescuentoResponse, status_code=201)
-async def crear_descuento(data: DescuentoCreate, db: Session = Depends(get_db)):
-    """Crea una nueva regla de descuento."""
+async def crear_descuento(
+    data: DescuentoCreate,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(require_admin),
+):
+    """Crea una nueva regla de descuento. Solo administradores."""
     crud = DescuentoCrud(db)
     try:
         descuento = crud.crear(
@@ -51,9 +57,12 @@ async def crear_descuento(data: DescuentoCreate, db: Session = Depends(get_db)):
 
 @router.put("/descuentos/{descuento_id}", response_model=DescuentoResponse)
 async def actualizar_descuento(
-    descuento_id: UUID, data: DescuentoUpdate, db: Session = Depends(get_db)
+    descuento_id: UUID,
+    data: DescuentoUpdate,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(require_admin),
 ):
-    """Actualiza una regla de descuento existente."""
+    """Actualiza una regla de descuento existente. Solo administradores."""
     crud = DescuentoCrud(db)
     campos = {k: v for k, v in data.dict().items() if v is not None}
     try:
@@ -65,8 +74,12 @@ async def actualizar_descuento(
         raise HTTPException(400, str(e))
 
 @router.delete("/descuentos/{descuento_id}", response_model=RespuestaAPI)
-async def eliminar_descuento(descuento_id: UUID, db: Session = Depends(get_db)):
-    """Elimina una regla de descuento."""
+async def eliminar_descuento(
+    descuento_id: UUID,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(require_admin),
+):
+    """Elimina una regla de descuento. Solo administradores."""
     crud = DescuentoCrud(db)
     if not crud.eliminar(descuento_id):
         raise HTTPException(404, "Descuento no encontrado")
