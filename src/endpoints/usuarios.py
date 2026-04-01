@@ -1,34 +1,58 @@
 """
 Endpoints de Usuarios
 """
- 
+
 from typing import List
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from src.auth.dependencies import get_current_user, require_admin
 from src.auth.security import PasswordManager
 from src.crud.usuario_crud import UsuarioCRUD
 from src.database.config import get_db
 from src.core.responses import RespuestaAPI
+from src.entities.usuario import Usuario
 from schemas import CambioContrasena, UsuarioResponse, UsuarioUpdate
- 
+
 router = APIRouter(prefix="/usuarios", tags=["usuarios"])
- 
+
+
 @router.get("/", response_model=List[UsuarioResponse])
-async def listar_usuarios(db: Session = Depends(get_db)):
+async def listar_usuarios(
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(require_admin),
+):
+    """Lista todos los usuarios. Solo administradores."""
     crud = UsuarioCRUD(db)
     return crud.listar()
- 
+
+
 @router.get("/{usuario_id}", response_model=UsuarioResponse)
-async def obtener_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
+async def obtener_usuario(
+    usuario_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
+):
+    """Obtiene un usuario por ID. Solo el propio usuario o un administrador."""
+    if current_user.id_usuario != usuario_id and current_user.rol != "administrador":
+        raise HTTPException(403, "Acceso denegado")
     crud = UsuarioCRUD(db)
     u = crud.obtener_por_id(usuario_id)
     if not u:
         raise HTTPException(404, "Usuario no encontrado")
     return u
- 
+
+
 @router.put("/{usuario_id}", response_model=UsuarioResponse)
-async def actualizar_usuario(usuario_id: UUID, data: UsuarioUpdate, db: Session = Depends(get_db)):
+async def actualizar_usuario(
+    usuario_id: UUID,
+    data: UsuarioUpdate,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
+):
+    """Actualiza un usuario. Solo el propio usuario o un administrador."""
+    if current_user.id_usuario != usuario_id and current_user.rol != "administrador":
+        raise HTTPException(403, "Acceso denegado")
     crud = UsuarioCRUD(db)
     campos = {k: v for k, v in data.dict().items() if v is not None}
     try:
@@ -38,23 +62,44 @@ async def actualizar_usuario(usuario_id: UUID, data: UsuarioUpdate, db: Session 
         return u
     except ValueError as e:
         raise HTTPException(400, str(e))
- 
+
+
 @router.patch("/{usuario_id}/desactivar", response_model=RespuestaAPI)
-async def desactivar_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
+async def desactivar_usuario(
+    usuario_id: UUID,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(require_admin),
+):
+    """Desactiva un usuario. Solo administradores."""
     crud = UsuarioCRUD(db)
     if not crud.desactivar(usuario_id):
         raise HTTPException(404, "Usuario no encontrado")
     return RespuestaAPI(mensaje="Usuario desactivado", exito=True)
- 
+
+
 @router.delete("/{usuario_id}", response_model=RespuestaAPI)
-async def eliminar_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
+async def eliminar_usuario(
+    usuario_id: UUID,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(require_admin),
+):
+    """Elimina un usuario. Solo administradores."""
     crud = UsuarioCRUD(db)
     if not crud.eliminar(usuario_id):
         raise HTTPException(404, "Usuario no encontrado")
     return RespuestaAPI(mensaje="Usuario eliminado", exito=True)
- 
+
+
 @router.post("/{usuario_id}/cambiar-contrasena", response_model=RespuestaAPI)
-async def cambiar_contrasena(usuario_id: UUID, data: CambioContrasena, db: Session = Depends(get_db)):
+async def cambiar_contrasena(
+    usuario_id: UUID,
+    data: CambioContrasena,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
+):
+    """Cambia la contraseña. Solo el propio usuario."""
+    if current_user.id_usuario != usuario_id:
+        raise HTTPException(403, "Acceso denegado")
     crud = UsuarioCRUD(db)
     u = crud.obtener_por_id(usuario_id)
     if not u:
@@ -64,5 +109,7 @@ async def cambiar_contrasena(usuario_id: UUID, data: CambioContrasena, db: Sessi
     valida, msg = PasswordManager.validate_password_strength(data.nueva_contrasena)
     if not valida:
         raise HTTPException(400, msg)
-    crud.actualizar(usuario_id, contrasena_hash=PasswordManager.hash_password(data.nueva_contrasena))
+    crud.actualizar(
+        usuario_id, contrasena_hash=PasswordManager.hash_password(data.nueva_contrasena)
+    )
     return RespuestaAPI(mensaje="Contrasena actualizada exitosamente", exito=True)
