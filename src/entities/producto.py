@@ -15,7 +15,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from src.database.config import Base
 
-
 class Producto(Base):
     """Modelo de Productos"""
 
@@ -53,7 +52,6 @@ class Producto(Base):
     categoria = relationship("Categoria", back_populates="productos")
     catalogo = relationship("Catalogo", back_populates="productos")
    
-
     usuario_creacion = relationship(
         "Usuario",
         foreign_keys=[id_usuario_creacion],

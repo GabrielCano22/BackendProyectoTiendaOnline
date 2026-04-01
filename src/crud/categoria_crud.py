@@ -4,7 +4,6 @@ from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
 
-
 class CategoriaCrud:
     def __init__(self, db: Session):
         self.db = db
@@ -64,7 +63,6 @@ class CategoriaCrud:
 
         return categoria
    
-         
     def eliminar_categoria(self,categoria_id:UUID)->bool:
         categoria =self.obtener_categoria_por_id(categoria_id)
         
@@ -75,5 +73,3 @@ class CategoriaCrud:
         self.db.commit()
         
         return True
-    
-    
