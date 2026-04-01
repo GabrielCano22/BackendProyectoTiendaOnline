@@ -4,9 +4,7 @@ Manejadores de errores para FastAPI
  
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
- 
 from src.core.exceptions import AppException
- 
  
 def registrar_error_handlers(app: FastAPI):
     """Registra los manejadores de errores en la aplicacion FastAPI"""

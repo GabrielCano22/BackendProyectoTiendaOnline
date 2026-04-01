@@ -5,7 +5,6 @@ CRUD para Usuario, Cliente y Administrador
 import re
 from typing import List, Optional
 from uuid import UUID
-
 from sqlalchemy.orm import Session
 from src.auth.security import PasswordManager
 from src.entities.usuario import Administrador, Cliente, Usuario
@@ -136,6 +135,5 @@ class UsuarioCRUD:
         
         return True
     
- 
     def hay_administradores(self) -> bool:
         return self.db.query(Administrador).count() > 0

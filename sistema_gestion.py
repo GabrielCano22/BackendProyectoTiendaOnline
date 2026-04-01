@@ -15,7 +15,6 @@ from src.crud.descuento_crud import DescuentoCrud
 from src.crud.carrito_crud import CarritoCrud
 from src.crud.factura_crud import FacturaCrud
 
-
 class SistemaGestion:
 
     def __init__(self):
