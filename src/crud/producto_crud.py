@@ -5,7 +5,6 @@ from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
 
-
 class ProductoCrud:
     def __init__(self, db: Session):  
         self.db = db
@@ -118,17 +117,14 @@ class ProductoCrud:
     
     def eliminar_producto(self, producto_id: UUID, usuario_id: UUID) -> bool:
 
-    
         producto = self.obtener_producto_por_id(producto_id)
 
-   
         if not producto:
             return False
 
         producto.eliminado = True
         producto.id_usuario_edita = usuario_id
 
-   
         self.db.commit()
 
         return True

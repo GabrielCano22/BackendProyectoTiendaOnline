@@ -11,7 +11,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from src.database.config import Base
 
-
 class Usuario(Base):
     __tablename__ = "usuarios"
 
@@ -50,7 +49,6 @@ class Usuario(Base):
             f"<Usuario(id={self.id_usuario}, nombre='{self.nombre}', rol='{self.rol}')>"
         )
 
-
 class Cliente(Usuario):
     """
     Subclase Cliente — hereda de Usuario.
@@ -65,7 +63,6 @@ class Cliente(Usuario):
 
     def __repr__(self):
         return f"<Cliente(id={self.id_usuario}, nombre='{self.nombre}')>"
-
 
 class Administrador(Usuario):
     """

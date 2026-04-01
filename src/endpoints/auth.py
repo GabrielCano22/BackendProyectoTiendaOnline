@@ -6,14 +6,12 @@ import secrets
  
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
- 
 from src.crud.usuario_crud import UsuarioCRUD
 from src.database.config import get_db
 from src.core.responses import RespuestaAPI
 from schemas import LoginRequest, LoginResponse, UsuarioCreate, UsuarioResponse
  
 router = APIRouter(prefix="/auth", tags=["autenticacion"])
- 
  
 @router.post("/login", response_model=LoginResponse)
 async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
@@ -27,7 +25,6 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
         )
     token = secrets.token_hex(32)
     return LoginResponse(clave=token, nombre_usuario=usuario)
- 
  
 @router.post("/registrar", response_model=UsuarioResponse, status_code=201)
 async def registrar(data: UsuarioCreate, db: Session = Depends(get_db)):
@@ -53,7 +50,6 @@ async def registrar(data: UsuarioCreate, db: Session = Depends(get_db)):
         return usuario
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
- 
  
 @router.post("/crear-admin", response_model=RespuestaAPI)
 async def crear_admin_inicial(db: Session = Depends(get_db)):
@@ -84,7 +80,6 @@ async def crear_admin_inicial(db: Session = Depends(get_db)):
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
- 
  
 @router.get("/estado", response_model=RespuestaAPI)
 async def estado():
