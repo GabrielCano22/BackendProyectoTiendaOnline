@@ -9,15 +9,18 @@ from uuid import UUID
 from pydantic import BaseModel, EmailStr
 from src.core.responses import RespuestaAPI
 
+
 class UsuarioBase(BaseModel):
     nombre: str
     nombre_usuario: str
     email: EmailStr
     telefono: Optional[str] = None
 
+
 class UsuarioCreate(UsuarioBase):
     contrasena: str
     rol: str = "cliente"
+
 
 class UsuarioUpdate(BaseModel):
     nombre: Optional[str] = None
@@ -25,9 +28,11 @@ class UsuarioUpdate(BaseModel):
     telefono: Optional[str] = None
     activo: Optional[bool] = None
 
+
 class CambioContrasena(BaseModel):
     contrasena_actual: str
     nueva_contrasena: str
+
 
 class UsuarioResponse(UsuarioBase):
     id_usuario: UUID
@@ -39,24 +44,30 @@ class UsuarioResponse(UsuarioBase):
     class Config:
         from_attributes = True
 
+
 class LoginRequest(BaseModel):
     nombre_usuario: str
     contrasena: str
+
 
 class LoginResponse(BaseModel):
     clave: str
     nombre_usuario: UsuarioResponse
 
+
 class CategoriaBase(BaseModel):
     nombre: str
     descripcion: Optional[str] = None
 
+
 class CategoriaCreate(CategoriaBase):
     pass
+
 
 class CategoriaUpdate(BaseModel):
     nombre: Optional[str] = None
     descripcion: Optional[str] = None
+
 
 class CategoriaResponse(CategoriaBase):
     id_categoria: UUID
@@ -68,6 +79,7 @@ class CategoriaResponse(CategoriaBase):
     class Config:
         from_attributes = True
 
+
 class ProductoBase(BaseModel):
     nombre: str
     descripcion: Optional[str] = None
@@ -77,8 +89,10 @@ class ProductoBase(BaseModel):
     precio: Decimal
     stock: int = 0
 
+
 class ProductoCreate(ProductoBase):
     categoria_id: UUID
+
 
 class ProductoUpdate(BaseModel):
     nombre: Optional[str] = None
@@ -87,6 +101,7 @@ class ProductoUpdate(BaseModel):
     marca: Optional[str] = None
     precio: Optional[Decimal] = None
     stock: Optional[int] = None
+
 
 class ProductoResponse(ProductoBase):
     id_producto: UUID
@@ -101,18 +116,22 @@ class ProductoResponse(ProductoBase):
     class Config:
         from_attributes = True
 
+
 class DescuentoBase(BaseModel):
     descripcion: str
     unidades_minimas: int
     porcentaje: Decimal
 
+
 class DescuentoCreate(DescuentoBase):
     pass
+
 
 class DescuentoUpdate(BaseModel):
     descripcion: Optional[str] = None
     unidades_minimas: Optional[int] = None
     porcentaje: Optional[Decimal] = None
+
 
 class DescuentoResponse(DescuentoBase):
     id_descuento: UUID
@@ -120,12 +139,14 @@ class DescuentoResponse(DescuentoBase):
     class Config:
         from_attributes = True
 
+
 class TiendaResponse(BaseModel):
     id_tienda: UUID
     nombre: str
 
     class Config:
         from_attributes = True
+
 
 class CatalogoResponse(BaseModel):
     id_catalogo: UUID
@@ -135,21 +156,25 @@ class CatalogoResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class AgregarAlCarritoRequest(BaseModel):
     id_producto: UUID
     cantidad: int
 
+
 class ActualizarCantidadRequest(BaseModel):
     cantidad: int
 
+
 class DetalleCarritoResponse(BaseModel):
-    id_detalle: UUID
+    id_detalle_carrito: UUID
     id_producto: UUID
     cantidad: int
     precio_unitario: Decimal
 
     class Config:
         from_attributes = True
+
 
 class CarritoResponse(BaseModel):
     id_carrito: UUID
@@ -159,6 +184,7 @@ class CarritoResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class DetalleFacturaResponse(BaseModel):
     id_detalle_factura: UUID
@@ -170,6 +196,7 @@ class DetalleFacturaResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class FacturaResponse(BaseModel):
     id_factura: UUID
