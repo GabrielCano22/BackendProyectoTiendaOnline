@@ -3,9 +3,10 @@ Endpoints de Autenticacion
 """
  
 import secrets
- 
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from src.auth.dependencies import registrar_sesion
 from src.crud.usuario_crud import UsuarioCRUD
 from src.database.config import get_db
 from src.core.responses import RespuestaAPI
@@ -24,6 +25,7 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
             detail="Credenciales incorrectas o usuario inactivo",
         )
     token = secrets.token_hex(32)
+    registrar_sesion(token, usuario.id_usuario)
     return LoginResponse(clave=token, nombre_usuario=usuario)
  
 @router.post("/registrar", response_model=UsuarioResponse, status_code=201)
@@ -31,7 +33,7 @@ async def registrar(data: UsuarioCreate, db: Session = Depends(get_db)):
     """Registrar un nuevo usuario (cliente o administrador)."""
     crud = UsuarioCRUD(db)
     try:
-        if data.rol == "administrador":
+        if data.rol.strip().lower() == "administrador":
             usuario = crud.crear_administrador(
                 nombre=data.nombre,
                 nombre_usuario=data.nombre_usuario,
