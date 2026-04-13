@@ -46,6 +46,7 @@ app.include_router(productos_router)
 app.include_router(categorias_router)
 app.include_router(descuentos_router)
 
+
 @app.on_event("startup")
 async def startup():
     print("🚀 Iniciando La Tienda de Gerardo...")
@@ -71,6 +72,7 @@ async def startup():
     print("✅ Sistema listo en http://localhost:8000")
     print("📚 Docs en http://localhost:8000/docs")
 
+
 @app.get("/", tags=["raíz"])
 async def root():
     return {
@@ -87,6 +89,7 @@ async def root():
             "facturas": "/facturas",
         },
     }
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
