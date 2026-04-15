@@ -166,11 +166,23 @@ class ActualizarCantidadRequest(BaseModel):
     cantidad: int
 
 
+class ProductoEnCarrito(BaseModel):
+    id_producto: UUID
+    nombre: str
+    marca: str
+    precio: Decimal
+    stock: int
+
+    class Config:
+        from_attributes = True
+
+
 class DetalleCarritoResponse(BaseModel):
     id_detalle_carrito: UUID
     id_producto: UUID
     cantidad: int
     precio_unitario: Decimal
+    producto: Optional[ProductoEnCarrito] = None
 
     class Config:
         from_attributes = True
@@ -201,7 +213,9 @@ class DetalleFacturaResponse(BaseModel):
 class FacturaResponse(BaseModel):
     id_factura: UUID
     id_usuario: UUID
+    id_carrito: UUID
     total_bruto: Decimal
+    porcentaje_descuento: Decimal
     total_descuento: Decimal
     total_neto: Decimal
     estado: str

@@ -8,7 +8,7 @@ Archivo: src/crud/factura_crud.py
 from decimal import Decimal
 from typing import List, Optional
 from uuid import UUID
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from src.entities.factura import Factura
 from src.entities.detalle_factura import DetalleFactura
 from src.entities.carrito import Carrito
@@ -109,15 +109,31 @@ class FacturaCrud:
 
     def obtener_factura_por_id(self, factura_id: UUID) -> Optional[Factura]:
         """Busca una factura por su UUID."""
-        return self.db.query(Factura).filter(Factura.id_factura == factura_id).first()
+        return (
+            self.db.query(Factura)
+            .options(selectinload(Factura.detalles))
+            .filter(Factura.id_factura == factura_id)
+            .first()
+        )
 
     def obtener_facturas_por_usuario(self, usuario_id: UUID) -> List[Factura]:
-        """Lista todas las facturas de un usuario."""
-        return self.db.query(Factura).filter(Factura.id_usuario == usuario_id).all()
+        """Lista todas las facturas de un usuario, más recientes primero."""
+        return (
+            self.db.query(Factura)
+            .options(selectinload(Factura.detalles))
+            .filter(Factura.id_usuario == usuario_id)
+            .order_by(Factura.fecha_creacion.desc())
+            .all()
+        )
 
     def obtener_todas_las_facturas(self) -> List[Factura]:
         """Lista todas las facturas del sistema (solo para admins)."""
-        return self.db.query(Factura).all()
+        return (
+            self.db.query(Factura)
+            .options(selectinload(Factura.detalles))
+            .order_by(Factura.fecha_creacion.desc())
+            .all()
+        )
 
     def marcar_como_pagada(self, factura_id: UUID) -> Optional[Factura]:
         """Cambia el estado de la factura a 'pagada'."""

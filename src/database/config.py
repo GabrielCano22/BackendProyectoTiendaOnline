@@ -21,8 +21,9 @@ engine = create_engine(
     DATABASE_URL,
     echo=False,
     pool_pre_ping=True,
-    pool_recycle=60,
-    max_overflow=2,
+    pool_size=5,
+    pool_recycle=300,
+    max_overflow=5,
     connect_args={"sslmode": "require", "keepalives": 1, "keepalives_idle": 30, "keepalives_interval": 10, "keepalives_count": 5,},  # Requerir SSL para Neon
 )
 

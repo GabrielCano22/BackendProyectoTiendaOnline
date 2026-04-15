@@ -14,7 +14,7 @@ class Carrito(Base):
     )
 
     id_usuario = Column(
-        UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False
+        UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False, index=True
     )
 
     estado = Column(String(20), default="activo")  # activo, finalizado, cancelado
