@@ -14,11 +14,11 @@ class Factura(Base):
     )
 
     id_usuario = Column(
-        UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False
+        UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False, index=True
     )
 
     id_carrito = Column(
-        UUID(as_uuid=True), ForeignKey("carritos.id_carrito"), nullable=False
+        UUID(as_uuid=True), ForeignKey("carritos.id_carrito"), nullable=False, index=True
     )
 
     total_bruto = Column(Numeric(10, 2), nullable=False)

@@ -14,11 +14,11 @@ class DetalleCarrito(Base):
     )
 
     id_carrito = Column(
-        UUID(as_uuid=True), ForeignKey("carritos.id_carrito"), nullable=False
+        UUID(as_uuid=True), ForeignKey("carritos.id_carrito"), nullable=False, index=True
     )
 
     id_producto = Column(
-        UUID(as_uuid=True), ForeignKey("productos.id_producto"), nullable=False
+        UUID(as_uuid=True), ForeignKey("productos.id_producto"), nullable=False, index=True
     )
 
     cantidad = Column(Integer, nullable=False, default=1)
