@@ -14,11 +14,11 @@ class DetalleFactura(Base):
     )
 
     id_factura = Column(
-        UUID(as_uuid=True), ForeignKey("facturas.id_factura"), nullable=False
+        UUID(as_uuid=True), ForeignKey("facturas.id_factura"), nullable=False, index=True
     )
 
     id_producto = Column(
-        UUID(as_uuid=True), ForeignKey("productos.id_producto"), nullable=False
+        UUID(as_uuid=True), ForeignKey("productos.id_producto"), nullable=False, index=True
     )
 
     nombre_producto = Column(
