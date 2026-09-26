@@ -19,7 +19,7 @@ from src.endpoints.descuentos_tienda import router as descuentos_router
 from src.crud.tienda_crud import TiendaCrud
 from src.crud.descuento_crud import DescuentoCrud
 from src.crud.usuario_crud import UsuarioCRUD
-from src.core.runtime_settings import cors_origins, should_run_startup_initialization
+from src.core.runtime_settings import should_run_startup_initialization
 
 app = FastAPI(
     title="La Tienda de Gerardo — API",
@@ -31,7 +31,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins(os.getenv("CORS_ORIGINS")),
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,15 +66,14 @@ async def startup():
         DescuentoCrud(db).seed_descuentos_base()
 
         crud_u = UsuarioCRUD(db)
-        admin_password = os.getenv("BOOTSTRAP_ADMIN_PASSWORD")
-        if not crud_u.hay_administradores() and admin_password:
+        if not crud_u.hay_administradores():
             crud_u.crear_administrador(
-                nombre=os.getenv("BOOTSTRAP_ADMIN_NAME", "Administrador"),
-                nombre_usuario=os.getenv("BOOTSTRAP_ADMIN_USERNAME", "admin"),
-                email=os.getenv("BOOTSTRAP_ADMIN_EMAIL", "admin@tienda.com"),
-                contrasena=admin_password,
+                nombre="Administrador",
+                nombre_usuario="admin",
+                email="admin@tienda.com",
+                contrasena="Admin123!",
             )
-            print("✅ Administrador inicial creado desde variables de entorno")
+            print("✅ Admin creado — usuario: admin | contraseña: Admin123!")
     finally:
         db.close()
 

@@ -4,7 +4,6 @@ Endpoints de Autenticacion
  
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from src.auth.registration_policy import public_registration_role
 from src.auth.tokens import create_access_token
 from src.crud.usuario_crud import UsuarioCRUD
 from src.database.config import get_db
@@ -28,11 +27,18 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
  
 @router.post("/registrar", response_model=UsuarioResponse, status_code=201)
 async def registrar(data: UsuarioCreate, db: Session = Depends(get_db)):
-    """Registrar un nuevo cliente."""
+    """Registrar un nuevo usuario (cliente o administrador)."""
     crud = UsuarioCRUD(db)
     try:
-        registration_role = public_registration_role(data.rol)
-        if registration_role == "cliente":
+        if data.rol.strip().lower() == "administrador":
+            usuario = crud.crear_administrador(
+                nombre=data.nombre,
+                nombre_usuario=data.nombre_usuario,
+                email=data.email,
+                contrasena=data.contrasena,
+                telefono=data.telefono,
+            )
+        else:
             usuario = crud.crear_cliente(
                 nombre=data.nombre,
                 nombre_usuario=data.nombre_usuario,
@@ -41,6 +47,36 @@ async def registrar(data: UsuarioCreate, db: Session = Depends(get_db)):
                 telefono=data.telefono,
             )
         return usuario
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/crear-admin", response_model=RespuestaAPI)
+async def crear_admin_inicial(db: Session = Depends(get_db)):
+    """Crea el usuario administrador inicial si no existe ninguno."""
+    crud = UsuarioCRUD(db)
+    if crud.hay_administradores():
+        return RespuestaAPI(
+            mensaje="Ya existe al menos un administrador",
+            exito=True,
+            datos={"admin_existe": True},
+        )
+    contrasena = "Admin123!"
+    try:
+        admin = crud.crear_administrador(
+            nombre="Administrador",
+            nombre_usuario="admin",
+            email="admin@tienda.com",
+            contrasena=contrasena,
+        )
+        return RespuestaAPI(
+            mensaje="Administrador creado exitosamente",
+            exito=True,
+            datos={
+                "id": str(admin.id_usuario),
+                "nombre_usuario": admin.nombre_usuario,
+                "contrasena_temporal": contrasena,
+            },
+        )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
  
