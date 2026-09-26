@@ -10,19 +10,9 @@ from sqlalchemy.orm import Session
 
 from src.database.config import get_db
 from src.entities.usuario import Usuario
-
-# Almacen de sesiones en memoria: token -> id_usuario (str)
-_sesiones: dict[str, str] = {}
+from src.auth.tokens import InvalidTokenError, decode_access_token
 
 _bearer = HTTPBearer()
-
-
-def registrar_sesion(token: str, id_usuario: UUID) -> None:
-    _sesiones[token] = str(id_usuario)
-
-
-def cerrar_sesion(token: str) -> None:
-    _sesiones.pop(token, None)
 
 
 def get_current_user(
@@ -30,14 +20,16 @@ def get_current_user(
     db: Session = Depends(get_db),
 ) -> Usuario:
     token = credentials.credentials
-    id_str = _sesiones.get(token)
-    if not id_str:
+    try:
+        id_str = decode_access_token(token)["sub"]
+        id_usuario = UUID(id_str)
+    except (InvalidTokenError, ValueError, RuntimeError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token invalido o sesion expirada",
         )
     from src.crud.usuario_crud import UsuarioCRUD
-    usuario = UsuarioCRUD(db).obtener_por_id(UUID(id_str))
+    usuario = UsuarioCRUD(db).obtener_por_id(id_usuario)
     if not usuario or not usuario.activo:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

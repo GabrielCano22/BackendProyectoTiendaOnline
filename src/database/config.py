@@ -10,6 +10,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from src.database.engine_options import build_engine_options
+
 load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -19,11 +21,7 @@ if not DATABASE_URL:
 
 engine = create_engine(
     DATABASE_URL,
-    echo=False,
-    pool_pre_ping=True,
-    pool_size=5,
-    pool_recycle=300,
-    max_overflow=5,
+    **build_engine_options(serverless=bool(os.getenv("VERCEL"))),
     connect_args={"sslmode": "require", "keepalives": 1, "keepalives_idle": 30, "keepalives_interval": 10, "keepalives_count": 5,},  # Requerir SSL para Neon
 )
 
